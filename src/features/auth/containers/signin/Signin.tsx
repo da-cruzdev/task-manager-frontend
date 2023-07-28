@@ -4,16 +4,16 @@ import { Button, Card, Spinner } from "flowbite-react"
 import { useForm } from "react-hook-form"
 import { EmailInput } from "../../components/form-inputs/EmailInput"
 import { PasswordInput } from "../../components/form-inputs/PasswordInput"
-import { UsernameInput } from "../../components/form-inputs/UsernameInput"
 import { useSelector } from "react-redux"
 import { useAppDispatch } from "../../../../app/hooks"
 import { AppDispatch, RootState } from "../../../../app/store"
-import { signupUser } from "./signup-slice"
 import { SignData } from "../../interfaces/signData.interfaces"
+import { signinUser } from "./signin-slice"
+import logo from "../logo.svg"
 
-export const Signup = () => {
+export const Signin = () => {
   const dispatch: AppDispatch = useAppDispatch()
-  const loading = useSelector((state: RootState) => state.signup.loading)
+  const loading = useSelector((state: RootState) => state.signin.loading)
 
   const {
     register,
@@ -23,7 +23,7 @@ export const Signup = () => {
   } = useForm()
 
   const formSubmit = async (data: SignData) => {
-    dispatch(signupUser(data))
+    dispatch(signinUser(data))
       .unwrap()
       .then((data) => {
         console.log(data)
@@ -39,10 +39,10 @@ export const Signup = () => {
       <div className="w-1/2">
         <Card className="container max-w-lg mx-auto">
           <h5 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white mx-auto">
-            <p>Signup</p>
+            <p>Signin</p>
           </h5>
+          <img className="logo mx-auto" src={logo} alt="" />
           <form className="flex flex-col gap-4" onSubmit={handleSubmit(formSubmit)}>
-            <UsernameInput register={register} errors={formErrors} />
             <EmailInput register={register} errors={formErrors} />
             <PasswordInput register={register} errors={formErrors} />
 
@@ -50,8 +50,6 @@ export const Signup = () => {
               {loading ? <Spinner></Spinner> : "Submit"}
             </Button>
           </form>
-
-          <a href="/auth/login">Connectez-vous</a>
         </Card>
       </div>
     </div>

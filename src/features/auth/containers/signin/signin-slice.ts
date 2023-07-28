@@ -1,6 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit"
-import authServices from "../../services/auth.services"
 import { ApolloError } from "@apollo/client"
+import authServices from "../../services/auth.services"
 import { SignResponse, SignData } from "../../interfaces/signData.interfaces"
 import toastr from "toastr"
 import "toastr/build/toastr.css"
@@ -16,16 +16,15 @@ const initialState: SignState = {
   data: null,
 }
 
-export const signupUser = createAsyncThunk<SignResponse, SignData, { rejectValue: string }>(
-  "signup/signupUser",
+export const signinUser = createAsyncThunk<SignResponse, SignData, { rejectValue: string }>(
+  "signup/signinUser",
   async (data: SignData, { rejectWithValue }) => {
     try {
-      const response = await authServices.signup(data)
+      const response = await authServices.signin(data)
       if (response.refreshToken) {
         authServices.setToken(response.accessToken)
       }
-      toastr.success("Inscription réussie")
-
+      toastr.success("Connexion réussie")
       return response
     } catch (error: any) {
       if (error instanceof ApolloError) {
@@ -36,25 +35,25 @@ export const signupUser = createAsyncThunk<SignResponse, SignData, { rejectValue
   },
 )
 
-const signupSlice = createSlice({
-  name: "signup",
+const signinSlice = createSlice({
+  name: "signin",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(signupUser.pending, (state) => {
+      .addCase(signinUser.pending, (state) => {
         state.loading = true
         state.error = null
       })
-      .addCase(signupUser.fulfilled, (state, action: PayloadAction<SignResponse>) => {
+      .addCase(signinUser.fulfilled, (state, action: PayloadAction<SignResponse>) => {
         state.loading = false
         state.data = action.payload
       })
-      .addCase(signupUser.rejected, (state, action: PayloadAction<string | undefined>) => {
+      .addCase(signinUser.rejected, (state, action: PayloadAction<string | undefined>) => {
         state.loading = false
         state.error = action.payload ?? null
       })
   },
 })
 
-export default signupSlice.reducer
+export default signinSlice.reducer
