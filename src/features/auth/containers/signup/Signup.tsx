@@ -1,6 +1,6 @@
 "use client"
 import React from "react"
-import { Button, Card, Checkbox, Label } from "flowbite-react"
+import { Button, Card, Spinner } from "flowbite-react"
 import { useForm } from "react-hook-form"
 import { EmailInput } from "../../components/form-inputs/EmailInput"
 import { PasswordInput } from "../../components/form-inputs/PasswordInput"
@@ -30,10 +30,10 @@ export const Signup = () => {
             <EmailInput register={register} errors={formErrors} />
             <PasswordInput register={register} errors={formErrors} />
 
-            <div className="flex items-center gap-2">
+            {/* <div className="flex items-center gap-2">
               <Checkbox id="remember" />
               <Label htmlFor="remember">Remember me</Label>
-            </div>
+            </div> */}
             <Button type="submit">Submit</Button>
           </form>
         </Card>
