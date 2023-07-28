@@ -1,7 +1,10 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit"
+import signupReducer from "../features/auth/containers/signup/signup-slice"
 
 export const store = configureStore({
-  reducer: {},
+  reducer: {
+    signup: signupReducer,
+  },
 })
 
 export type AppDispatch = typeof store.dispatch
