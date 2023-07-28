@@ -34,7 +34,9 @@ export const Signup = () => {
               <Checkbox id="remember" />
               <Label htmlFor="remember">Remember me</Label>
             </div> */}
-            <Button type="submit">Submit</Button>
+            <Button className="mt-5" type="submit">
+              Submit
+            </Button>
           </form>
         </Card>
       </div>
