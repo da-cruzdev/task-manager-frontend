@@ -10,10 +10,10 @@ import TeamUsers from "../../components/users/TeamUsers"
 const Dashboard = () => {
   return (
     <div className="flex">
-      <div className="w-1/5">
+      <div className="w-1/5 w-64 h-screen ">
         <SidebarComponent />
       </div>
-      <div className="w-4/5 mt-3 me-9">
+      <div className="w-4/5 mt-4 px-5 mx-auto">
         <div>
           <Navbar />
         </div>
