@@ -15,7 +15,7 @@ const HomeComponent = () => {
       <div className="md:col-span-2 md:row-span-1">
         <TaskCard taskTitle={assignedTask} taskNumber={0} link="/dashboard/assign" />
       </div>
-      <div className="md:col-span-2 md:row-span-4">
+      <div className="md:col-span-2 md:row-span-2">
         <UserTeamCard />
       </div>
       <div className="md:col-span-4">

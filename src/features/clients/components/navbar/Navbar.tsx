@@ -2,8 +2,39 @@
 
 import { Navbar, TextInput, Avatar, Dropdown } from "flowbite-react"
 import { HiSearch } from "react-icons/hi"
+import { useSelector } from "react-redux"
+import { selectSignupData } from "../../../auth/containers/signup/signup-selector"
+import React, { useEffect, useState } from "react"
+import { SignResponse } from "../../../auth/interfaces/signData.interfaces"
+
+type UserProps = {
+  userId?: number
+  userName?: string
+  userEmail?: string
+}
+
+export const UserDropdown: React.FC<UserProps> = ({ userEmail }) => {
+  return (
+    <Dropdown inline label={<Avatar alt="User settings" rounded />}>
+      <Dropdown.Header>
+        <span className="block truncate text-sm font-medium">{userEmail}</span>
+      </Dropdown.Header>
+      <Dropdown.Item>Modifier le profil</Dropdown.Item>
+      <Dropdown.Divider />
+      <Dropdown.Item>Sign out</Dropdown.Item>
+    </Dropdown>
+  )
+}
 
 export default function NavbarComponent() {
+  const [userData, setUserData] = useState<SignResponse | null>(null)
+
+  const data = useSelector(selectSignupData)
+  useEffect(() => {
+    return setUserData(data)
+  }, [data])
+  console.log(userData?.user)
+
   return (
     <Navbar fluid rounded>
       <div className="flex">
@@ -14,23 +45,9 @@ export default function NavbarComponent() {
       </div>
 
       <div className="flex">
-        <span className="block truncate text-sm font-medium me-3 mt-2">Bonnie Green</span>
-        <UserDropdown />
+        {userData ? <span className="block truncate text-sm font-medium me-3 mt-2">{userData.user.username}</span> : null}
+        <UserDropdown userEmail={userData?.user.email} />
       </div>
     </Navbar>
-  )
-}
-
-export function UserDropdown() {
-  return (
-    <Dropdown inline label={<Avatar alt="User settings" rounded />}>
-      <Dropdown.Header>
-        <span className="block truncate text-sm font-medium">name@flowbite.com</span>
-      </Dropdown.Header>
-      <Dropdown.Item>Settings</Dropdown.Item>
-      <Dropdown.Item>Earnings</Dropdown.Item>
-      <Dropdown.Divider />
-      <Dropdown.Item>Sign out</Dropdown.Item>
-    </Dropdown>
   )
 }
