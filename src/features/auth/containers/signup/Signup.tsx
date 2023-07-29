@@ -11,7 +11,8 @@ import { AppDispatch, RootState } from "../../../../app/store"
 import { signupUser } from "./signup-slice"
 import { SignData } from "../../interfaces/signData.interfaces"
 import logo from "../logo.svg"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import authServices from "../../services/auth.services"
 
 export const Signup = () => {
   const dispatch: AppDispatch = useAppDispatch()
@@ -24,12 +25,18 @@ export const Signup = () => {
     formState: { errors: formErrors },
   } = useForm()
 
+  const navigate = useNavigate()
+  const isUserLoggedIn = authServices.isLoggedIn()
+
   const formSubmit = async (data: SignData) => {
     dispatch(signupUser(data))
       .unwrap()
       .then((data) => {
         console.log(data)
         reset()
+        if (isUserLoggedIn) {
+          navigate("/dashboard")
+        }
       })
       .catch((error) => {
         console.log(error)

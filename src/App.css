@@ -26,3 +26,9 @@ body {
   opacity: 1;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4);
 }
+
+.sidebar-item-active {
+  background-color: #f3f4f6; /* Couleur de fond pour l'élément actif */
+  color: #000; /* Couleur du texte pour l'élément actif */
+  font-weight: bold; /* Police en gras pour l'élément actif */
+}
