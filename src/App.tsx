@@ -6,6 +6,7 @@ import { Signup } from "./features/auth/containers/signup/Signup"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { Signin } from "./features/auth/containers/signin/Signin"
 import Dashboard from "./features/clients/containers/dashboard/Dashboard"
+import { PrivateRoute } from "./PrivateRoute"
 
 function App() {
   return (
@@ -13,7 +14,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Signup />} />
         <Route path="/auth/login" element={<Signin />} />
-        <Route path="/dashboard/*" element={<Dashboard />} />
+        <Route path="/dashboard/*" element={<PrivateRoute element={<Dashboard />} />} />
       </Routes>
     </BrowserRouter>
   )
