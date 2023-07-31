@@ -1,6 +1,6 @@
 import { RootState } from "../../../../app/store"
 
-export const selectSigninData = (state: RootState) => state.signin.data
+export const selectTokens = (state: RootState) => state.signin.tokens
 
 export const selectSigninLoading = (state: RootState) => state.signin.loading
 

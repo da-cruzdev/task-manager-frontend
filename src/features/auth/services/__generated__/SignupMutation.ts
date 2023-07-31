@@ -7,18 +7,10 @@
 // GraphQL mutation operation: SignupMutation
 // ====================================================
 
-export interface SignupMutation_Signup_user {
-  __typename: "User";
-  id: string;
-  email: string;
-  username: string;
-}
-
 export interface SignupMutation_Signup {
   __typename: "SignResponse";
   accessToken: string;
   refreshToken: string;
-  user: SignupMutation_Signup_user;
 }
 
 export interface SignupMutation {

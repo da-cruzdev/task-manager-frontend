@@ -8,12 +8,12 @@ import "toastr/build/toastr.css"
 interface SignState {
   loading: boolean
   error: string | null
-  data: SignResponse | null
+  tokens: SignResponse | null
 }
 const initialState: SignState = {
   loading: false,
   error: null,
-  data: null,
+  tokens: null,
 }
 
 export const signupUser = createAsyncThunk<SignResponse, SignData, { rejectValue: string }>(
@@ -21,8 +21,9 @@ export const signupUser = createAsyncThunk<SignResponse, SignData, { rejectValue
   async (data: SignData, { rejectWithValue }) => {
     try {
       const response = await authServices.signup(data)
-      if (response.refreshToken) {
-        authServices.setToken(response.accessToken)
+      if (response.accessToken) {
+        const token = response.accessToken
+        authServices.setToken(token)
       }
 
       return response
@@ -47,7 +48,7 @@ const signupSlice = createSlice({
       })
       .addCase(signupUser.fulfilled, (state, action: PayloadAction<SignResponse>) => {
         state.loading = false
-        state.data = action.payload
+        state.tokens = action.payload
       })
       .addCase(signupUser.rejected, (state, action: PayloadAction<string | undefined>) => {
         state.loading = false

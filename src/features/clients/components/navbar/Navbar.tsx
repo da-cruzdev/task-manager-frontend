@@ -2,36 +2,15 @@
 
 import { Navbar, TextInput, Avatar, Dropdown } from "flowbite-react"
 import { HiSearch } from "react-icons/hi"
-import { useSelector } from "react-redux"
-import { selectSignupData } from "../../../auth/containers/signup/signup-selector"
 import React, { useEffect, useState } from "react"
 import { User } from "../../../auth/interfaces/signData.interfaces"
-import { getUser } from "../../redux/clientSlice"
-import { AppDispatch, useAppDispatch } from "../../../../app/store"
-import { selectSigninData } from "../../../auth/containers/signin/signin.selector"
-import { logoutUser, setUser } from "../../redux/userSlice"
 
 type UserProps = {
   userEmail?: string
 }
 
 export const UserDropdown: React.FC<UserProps> = ({ userEmail }) => {
-  const dispatch: AppDispatch = useAppDispatch()
-  const signupData = useSelector(selectSignupData)
-  const signinData = useSelector(selectSigninData)
-  const userId = signinData?.user.id || signupData?.user.id
-  console.log(userId)
-
-  const handleLogout = async () => {
-    try {
-      if (userId) {
-        console.log("click=========>")
-        await dispatch(logoutUser(userId))
-      }
-    } catch (error) {
-      console.error("Erreur lors de la déconnexion:", error)
-    }
-  }
+  const handleLogout = async () => {}
   return (
     <Dropdown inline label={<Avatar alt="User settings" rounded />}>
       <Dropdown.Header>
@@ -45,30 +24,9 @@ export const UserDropdown: React.FC<UserProps> = ({ userEmail }) => {
 }
 
 export default function NavbarComponent() {
-  const [userData, setUserData] = useState<User | null>(null)
+  const [userData] = useState<User | null>(null)
 
-  const signupData = useSelector(selectSignupData)
-  const signinData = useSelector(selectSigninData)
-  const email = signinData?.user.email || signupData?.user.email
-
-  const dispatch: AppDispatch = useAppDispatch()
-  useEffect(() => {
-    const fetchData = async () => {
-      if (email) {
-        try {
-          const user = await dispatch(getUser(email)).unwrap()
-          dispatch(setUser(user))
-
-          if (!userData) {
-            setUserData(user)
-          }
-        } catch (error) {
-          console.log(error)
-        }
-      }
-    }
-    fetchData()
-  }, [dispatch, email, userData])
+  useEffect(() => {})
 
   return (
     <Navbar fluid rounded>

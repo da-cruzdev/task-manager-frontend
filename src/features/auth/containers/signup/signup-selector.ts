@@ -1,6 +1,6 @@
 import { RootState } from "../../../../app/store"
 
-export const selectSignupData = (state: RootState) => state.signup.data
+export const selectTokens = (state: RootState) => state.signup.tokens
 
 export const selectSignupLoading = (state: RootState) => state.signup.loading
 

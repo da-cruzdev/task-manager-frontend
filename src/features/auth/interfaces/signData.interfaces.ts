@@ -7,7 +7,6 @@ export interface SignData {
 export interface SignResponse {
   accessToken: string
   refreshToken: string
-  user: User
 }
 
 export interface User {
