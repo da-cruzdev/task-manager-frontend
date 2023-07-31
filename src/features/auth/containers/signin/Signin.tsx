@@ -31,10 +31,10 @@ export const Signin = () => {
     dispatch(signinUser(data))
       .unwrap()
       .then((data) => {
-        reset()
         if (isUserLoggedIn) {
           navigate("/dashboard")
         }
+        reset()
         return data
       })
       .catch((error) => {

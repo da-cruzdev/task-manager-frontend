@@ -33,10 +33,10 @@ export const Signup = () => {
       .unwrap()
       .then((data) => {
         console.log(data)
-        reset()
         if (isUserLoggedIn) {
           navigate("/dashboard")
         }
+        reset()
       })
       .catch((error) => {
         console.log(error)

@@ -8,6 +8,7 @@ import { AppDispatch, useAppDispatch } from "../../../../app/store"
 import { User } from "../../../auth/interfaces/signData.interfaces"
 import { logoutUser } from "../../redux/userSlice"
 import { useNavigate } from "react-router-dom"
+import client from "../../../../app/graphql"
 
 type UserProps = {
   userEmail?: string
@@ -53,6 +54,7 @@ export default function NavbarComponent() {
         .then((response) => {
           if (response !== undefined) {
             navigate("/auth/login")
+            client.resetStore()
           }
         })
         .catch((err) => {
