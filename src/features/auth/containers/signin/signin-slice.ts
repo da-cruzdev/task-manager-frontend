@@ -17,7 +17,7 @@ const initialState: SignState = {
 }
 
 export const signinUser = createAsyncThunk<SignResponse, SignData, { rejectValue: string }>(
-  "signup/signinUser",
+  "signin/signinUser",
   async (data: SignData, { rejectWithValue }) => {
     try {
       const response = await authServices.signin(data)

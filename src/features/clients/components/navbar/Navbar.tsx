@@ -5,7 +5,11 @@ import { HiSearch } from "react-icons/hi"
 import { useSelector } from "react-redux"
 import { selectSignupData } from "../../../auth/containers/signup/signup-selector"
 import React, { useEffect, useState } from "react"
-import { SignResponse } from "../../../auth/interfaces/signData.interfaces"
+import { User } from "../../../auth/interfaces/signData.interfaces"
+import { getUser } from "../../redux/clientSlice"
+import { AppDispatch, RootState, useAppDispatch } from "../../../../app/store"
+import { selectSigninData } from "../../../auth/containers/signin/signin.selector"
+import { setUser } from "../../redux/userSlice"
 
 type UserProps = {
   userId?: number
@@ -21,19 +25,36 @@ export const UserDropdown: React.FC<UserProps> = ({ userEmail }) => {
       </Dropdown.Header>
       <Dropdown.Item>Modifier le profil</Dropdown.Item>
       <Dropdown.Divider />
-      <Dropdown.Item>Sign out</Dropdown.Item>
+      <Dropdown.Item>Se déconnecter</Dropdown.Item>
     </Dropdown>
   )
 }
 
 export default function NavbarComponent() {
-  const [userData, setUserData] = useState<SignResponse | null>(null)
+  const [userData, setUserData] = useState<User | null>(null)
 
-  const data = useSelector(selectSignupData)
+  const signupData = useSelector(selectSignupData)
+  const signinData = useSelector(selectSigninData)
+  const email = signinData?.user.email || signupData?.user.email
+
+  const dispatch: AppDispatch = useAppDispatch()
   useEffect(() => {
-    return setUserData(data)
-  }, [data])
-  console.log(userData?.user)
+    const data = async () => {
+      if (email) {
+        try {
+          const user = await dispatch(getUser(email)).unwrap()
+          dispatch(setUser(user))
+
+          setUserData(user)
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    }
+    data()
+  }, [dispatch, email, userData])
+
+  const user = useSelector((state: RootState) => state.user.data)
 
   return (
     <Navbar fluid rounded>
@@ -45,8 +66,8 @@ export default function NavbarComponent() {
       </div>
 
       <div className="flex">
-        {userData ? <span className="block truncate text-sm font-medium me-3 mt-2">{userData.user.username}</span> : null}
-        <UserDropdown userEmail={userData?.user.email} />
+        <span className="block truncate text-sm font-medium me-3 mt-2">{user?.username}</span>
+        <UserDropdown userEmail={user?.email} />
       </div>
     </Navbar>
   )
