@@ -10,3 +10,13 @@ export const GET_USER = gql`
     }
   }
 `
+export const GET_USER_INFO = gql`
+  query GetUserInfo {
+    getUserInfo {
+      id
+      username
+      email
+      role
+    }
+  }
+`

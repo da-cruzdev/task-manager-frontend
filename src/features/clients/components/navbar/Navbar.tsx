@@ -3,6 +3,8 @@
 import { Navbar, TextInput, Avatar, Dropdown } from "flowbite-react"
 import { HiSearch } from "react-icons/hi"
 import React, { useEffect, useState } from "react"
+import { getUser } from "../../redux/clientSlice"
+import { AppDispatch, useAppDispatch } from "../../../../app/store"
 import { User } from "../../../auth/interfaces/signData.interfaces"
 
 type UserProps = {
@@ -24,9 +26,22 @@ export const UserDropdown: React.FC<UserProps> = ({ userEmail }) => {
 }
 
 export default function NavbarComponent() {
-  const [userData] = useState<User | null>(null)
+  const [userData, setUserData] = useState<User | null>(null)
+  const dispatch: AppDispatch = useAppDispatch()
 
-  useEffect(() => {})
+  useEffect(() => {
+    const user = async () => {
+      dispatch(getUser())
+        .unwrap()
+        .then((data) => {
+          setUserData(data)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    }
+    user()
+  }, [dispatch])
 
   return (
     <Navbar fluid rounded>

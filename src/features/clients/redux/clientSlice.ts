@@ -16,9 +16,9 @@ const initialState: ClientState = {
   user: null,
 }
 
-export const getUser = createAsyncThunk<User, string, { rejectValue: string }>("client/getUser", async (data: string, { rejectWithValue }) => {
+export const getUser = createAsyncThunk<User>("client/getUser", async (_, { rejectWithValue }) => {
   try {
-    const response = await clientServices.getUser(data)
+    const response = await clientServices.getUserInfo()
     return response
   } catch (error: any) {
     toastr.error(error.message)
