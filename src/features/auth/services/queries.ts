@@ -19,7 +19,7 @@ export const SIGNIN_MUTATION = gql`
 `
 
 export const LOGOUT = gql`
-  mutation logout($id: Float!) {
+  mutation Logout($id: Int!) {
     Logout(id: $id) {
       loggedOut
     }

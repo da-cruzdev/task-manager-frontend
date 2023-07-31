@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { User } from "../../auth/interfaces/signData.interfaces"
+import { LogoutResponse, User } from "../../auth/interfaces/signData.interfaces"
 import authServices from "../../auth/services/auth.services"
 import toastr from "toastr"
 import "toastr/build/toastr.css"
@@ -8,7 +8,7 @@ interface UserState {
   data: User | null
   loading: boolean
   error: string | null
-  loggedOut: any
+  loggedOut: LogoutResponse | null
 }
 
 const initialState: UserState = {
@@ -20,11 +20,15 @@ const initialState: UserState = {
 
 export const logoutUser = createAsyncThunk<any, number, { rejectValue: string }>("user/logoutUser", async (id: number, { rejectWithValue }) => {
   try {
-    await authServices.logout(id)
+    const response = await authServices.logout(id)
+    if (response.loggedOut === true) {
+      authServices.removeToken()
+    }
     toastr.success("Déconnexion réussie")
+    return response
   } catch (error: any) {
-    toastr.error("Erreur lors de la déconnexion")
-    return rejectWithValue("Erreur lors de la déconnexion")
+    toastr.error(error)
+    return rejectWithValue(error.message) || "Erreur lors de la déconnexion"
   }
 })
 
@@ -42,7 +46,7 @@ const userSlice = createSlice({
         state.loading = true
         state.error = null
       })
-      .addCase(logoutUser.fulfilled, (state, action: PayloadAction<any>) => {
+      .addCase(logoutUser.fulfilled, (state, action: PayloadAction<LogoutResponse>) => {
         state.loading = false
         state.loggedOut = action.payload
       })

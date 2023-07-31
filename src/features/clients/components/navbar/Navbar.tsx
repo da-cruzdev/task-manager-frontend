@@ -6,13 +6,14 @@ import React, { useEffect, useState } from "react"
 import { getUser } from "../../redux/clientSlice"
 import { AppDispatch, useAppDispatch } from "../../../../app/store"
 import { User } from "../../../auth/interfaces/signData.interfaces"
+import { logoutUser } from "../../redux/userSlice"
+import { useNavigate } from "react-router-dom"
 
 type UserProps = {
   userEmail?: string
 }
 
-export const UserDropdown: React.FC<UserProps> = ({ userEmail }) => {
-  const handleLogout = async () => {}
+export const UserDropdown: React.FC<UserProps & { handleLogout: () => void }> = ({ userEmail, handleLogout }) => {
   return (
     <Dropdown inline label={<Avatar alt="User settings" rounded />}>
       <Dropdown.Header>
@@ -29,6 +30,8 @@ export default function NavbarComponent() {
   const [userData, setUserData] = useState<User | null>(null)
   const dispatch: AppDispatch = useAppDispatch()
 
+  const navigate = useNavigate()
+
   useEffect(() => {
     const user = async () => {
       dispatch(getUser())
@@ -43,6 +46,20 @@ export default function NavbarComponent() {
     user()
   }, [dispatch])
 
+  const onLogout = async () => {
+    if (userData?.id !== undefined)
+      dispatch(logoutUser(userData?.id))
+        .unwrap()
+        .then((response) => {
+          if (response !== undefined) {
+            navigate("/auth/login")
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+  }
+
   return (
     <Navbar fluid rounded>
       <div className="flex">
@@ -54,7 +71,7 @@ export default function NavbarComponent() {
 
       <div className="flex">
         <span className="block truncate text-sm font-medium me-3 mt-2">{userData?.username}</span>
-        <UserDropdown userEmail={userData?.email} />
+        <UserDropdown userEmail={userData?.email} handleLogout={onLogout} />
       </div>
     </Navbar>
   )

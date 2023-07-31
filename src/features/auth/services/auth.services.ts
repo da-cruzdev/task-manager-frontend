@@ -1,5 +1,5 @@
 import client from "../../../app/graphql"
-import { SignData, SignResponse } from "../interfaces/signData.interfaces"
+import { LogoutResponse, SignData, SignResponse } from "../interfaces/signData.interfaces"
 import { LOGOUT, SIGNIN_MUTATION, SIGNUP_MUTATION } from "./queries"
 
 class AuthService {
@@ -25,9 +25,12 @@ class AuthService {
     }
   }
 
-  async logout(userId: number) {
+  async logout(userId: number): Promise<LogoutResponse> {
     try {
-      return await client.mutate({ mutation: LOGOUT, variables: { userId } })
+      const idAsNumber = parseInt(userId.toString(), 10)
+
+      const response = await client.mutate({ mutation: LOGOUT, variables: { id: idAsNumber } })
+      return response.data.Logout
     } catch (error) {
       throw error
     }
