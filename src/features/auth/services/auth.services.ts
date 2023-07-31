@@ -1,6 +1,6 @@
 import client from "../../../app/graphql"
 import { SignData, SignResponse } from "../interfaces/signData.interfaces"
-import { SIGNIN_MUTATION, SIGNUP_MUTATION } from "./queries"
+import { LOGOUT, SIGNIN_MUTATION, SIGNUP_MUTATION } from "./queries"
 
 class AuthService {
   async signup(data: SignData): Promise<SignResponse> {
@@ -25,12 +25,24 @@ class AuthService {
     }
   }
 
+  async logout(userId: number) {
+    try {
+      return await client.mutate({ mutation: LOGOUT, variables: { userId } })
+    } catch (error) {
+      throw error
+    }
+  }
+
   getToken(): string | null {
     return localStorage.getItem("@token")
   }
 
   setToken(token: string) {
     localStorage.setItem("@token", token)
+  }
+
+  removeToken() {
+    localStorage.removeItem("@token")
   }
 
   isLoggedIn(): boolean {

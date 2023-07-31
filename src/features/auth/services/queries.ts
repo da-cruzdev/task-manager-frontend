@@ -26,3 +26,11 @@ export const SIGNIN_MUTATION = gql`
     }
   }
 `
+
+export const LOGOUT = gql`
+  mutation logout($id: Float!) {
+    Logout(id: $id) {
+      loggedOut
+    }
+  }
+`

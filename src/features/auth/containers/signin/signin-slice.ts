@@ -24,7 +24,6 @@ export const signinUser = createAsyncThunk<SignResponse, SignData, { rejectValue
       if (response.refreshToken) {
         authServices.setToken(response.accessToken)
       }
-      toastr.success("Connexion réussie")
       return response
     } catch (error: any) {
       if (error instanceof ApolloError) {

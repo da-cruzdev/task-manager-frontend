@@ -24,7 +24,6 @@ export const signupUser = createAsyncThunk<SignResponse, SignData, { rejectValue
       if (response.refreshToken) {
         authServices.setToken(response.accessToken)
       }
-      toastr.success("Inscription réussie")
 
       return response
     } catch (error: any) {

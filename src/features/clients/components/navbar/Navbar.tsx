@@ -7,17 +7,31 @@ import { selectSignupData } from "../../../auth/containers/signup/signup-selecto
 import React, { useEffect, useState } from "react"
 import { User } from "../../../auth/interfaces/signData.interfaces"
 import { getUser } from "../../redux/clientSlice"
-import { AppDispatch, RootState, useAppDispatch } from "../../../../app/store"
+import { AppDispatch, useAppDispatch } from "../../../../app/store"
 import { selectSigninData } from "../../../auth/containers/signin/signin.selector"
-import { setUser } from "../../redux/userSlice"
+import { logoutUser, setUser } from "../../redux/userSlice"
 
 type UserProps = {
-  userId?: number
-  userName?: string
   userEmail?: string
 }
 
 export const UserDropdown: React.FC<UserProps> = ({ userEmail }) => {
+  const dispatch: AppDispatch = useAppDispatch()
+  const signupData = useSelector(selectSignupData)
+  const signinData = useSelector(selectSigninData)
+  const userId = signinData?.user.id || signupData?.user.id
+  console.log(userId)
+
+  const handleLogout = async () => {
+    try {
+      if (userId) {
+        console.log("click=========>")
+        await dispatch(logoutUser(userId))
+      }
+    } catch (error) {
+      console.error("Erreur lors de la déconnexion:", error)
+    }
+  }
   return (
     <Dropdown inline label={<Avatar alt="User settings" rounded />}>
       <Dropdown.Header>
@@ -25,7 +39,7 @@ export const UserDropdown: React.FC<UserProps> = ({ userEmail }) => {
       </Dropdown.Header>
       <Dropdown.Item>Modifier le profil</Dropdown.Item>
       <Dropdown.Divider />
-      <Dropdown.Item>Se déconnecter</Dropdown.Item>
+      <Dropdown.Item onClick={handleLogout}>Se déconnecter</Dropdown.Item>
     </Dropdown>
   )
 }
@@ -39,22 +53,22 @@ export default function NavbarComponent() {
 
   const dispatch: AppDispatch = useAppDispatch()
   useEffect(() => {
-    const data = async () => {
+    const fetchData = async () => {
       if (email) {
         try {
           const user = await dispatch(getUser(email)).unwrap()
           dispatch(setUser(user))
 
-          setUserData(user)
+          if (!userData) {
+            setUserData(user)
+          }
         } catch (error) {
           console.log(error)
         }
       }
     }
-    data()
+    fetchData()
   }, [dispatch, email, userData])
-
-  const user = useSelector((state: RootState) => state.user.data)
 
   return (
     <Navbar fluid rounded>
@@ -66,8 +80,8 @@ export default function NavbarComponent() {
       </div>
 
       <div className="flex">
-        <span className="block truncate text-sm font-medium me-3 mt-2">{user?.username}</span>
-        <UserDropdown userEmail={user?.email} />
+        <span className="block truncate text-sm font-medium me-3 mt-2">{userData?.username}</span>
+        <UserDropdown userEmail={userData?.email} />
       </div>
     </Navbar>
   )

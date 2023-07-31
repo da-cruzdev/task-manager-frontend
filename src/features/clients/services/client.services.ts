@@ -13,7 +13,7 @@ class ClientService {
         return {
           headers: {
             ...headers,
-            Authorization: `Bearer ${token}`,
+            authorization: `Bearer${token}`,
           },
         }
       })
