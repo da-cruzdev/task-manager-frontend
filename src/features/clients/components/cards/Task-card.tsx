@@ -3,13 +3,15 @@
 import { Button, Card } from "flowbite-react"
 import React, { useState } from "react"
 import CreateTaskModal from "../modals/CreateTaskModal"
+import { User } from "../../../auth/interfaces/signData.interfaces"
 
 type TaskCardProps = {
   taskTitle: string
   taskNumber: number
   link: string
+  users: User[]
 }
-export const TaskCard: React.FC<TaskCardProps> = ({ taskTitle, taskNumber }) => {
+export const TaskCard: React.FC<TaskCardProps> = ({ taskTitle, taskNumber, users }) => {
   const [isModalOpen, setModalOpen] = useState(false)
   return (
     <Card className="max-w-xl h-64">
@@ -20,7 +22,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ taskTitle, taskNumber }) => 
       <Button className="mt-9" onClick={() => setModalOpen(true)}>
         <p>Créer une tâche</p>
       </Button>
-      <CreateTaskModal open={isModalOpen} onClose={() => setModalOpen(false)} />
+      <CreateTaskModal open={isModalOpen} onClose={() => setModalOpen(false)} users={users} />
     </Card>
   )
 }

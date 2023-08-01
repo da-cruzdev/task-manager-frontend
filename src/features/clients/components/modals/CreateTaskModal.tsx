@@ -1,17 +1,17 @@
 import { Modal, Label, TextInput, Button, Select, Textarea, Spinner } from "flowbite-react"
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import Datepicker, { DateValueType } from "react-tailwindcss-datepicker"
 import dayjs from "dayjs"
 import { AppDispatch, RootState, useAppDispatch } from "../../../../app/store"
 import { useSelector } from "react-redux"
 import { createTask } from "../../redux/taskSlice"
 import { User } from "../../../auth/interfaces/signData.interfaces"
-import { getAllUsers } from "../../redux/userSlice"
 import { useForm } from "react-hook-form"
 
 type TaskModalProps = {
   open: boolean
   onClose: () => void
+  users: User[]
 }
 
 type TaskFormData = {
@@ -34,8 +34,7 @@ export const useDatePicker = (initialValue: DateValueType) => {
   }
 }
 
-const CreateTaskModal: React.FC<TaskModalProps> = ({ open, onClose }) => {
-  const [users, setUsers] = useState<User[]>([])
+const CreateTaskModal: React.FC<TaskModalProps> = ({ open, onClose, users }) => {
   const { value, onChange } = useDatePicker({
     startDate: new Date(),
     endDate: dayjs(new Date()).add(1, "month").toDate(),
@@ -48,20 +47,6 @@ const CreateTaskModal: React.FC<TaskModalProps> = ({ open, onClose }) => {
 
   const dispatch: AppDispatch = useAppDispatch()
   const loading = useSelector((state: RootState) => state.task.loading)
-
-  useEffect(() => {
-    const fetchData = async () => {
-      dispatch(getAllUsers())
-        .unwrap()
-        .then((data) => {
-          setUsers(data)
-        })
-        .catch((err) => {
-          console.log(err)
-        })
-    }
-    fetchData()
-  }, [dispatch])
 
   const today = new Date()
   const formattedToday = new Date(today.getFullYear(), today.getMonth(), today.getDate())
