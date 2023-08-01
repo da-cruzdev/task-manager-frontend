@@ -37,7 +37,7 @@ const HomeComponent = () => {
         <TaskCard taskTitle={assignedTask} taskNumber={0} users={users} link="/dashboard/assign" />
       </div>
       <div className="md:col-span-2 md:row-span-2">
-        <UserTeamCard />
+        <UserTeamCard users={users} />
       </div>
       <div className="md:col-span-4">
         <TasksProgression />

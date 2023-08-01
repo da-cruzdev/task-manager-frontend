@@ -121,7 +121,7 @@ const CreateTaskModal: React.FC<TaskModalProps> = ({ open, onClose, users }) => 
               <Textarea
                 {...register("description", {
                   required: "Ce champ est requis",
-                  minLength: { value: 30, message: "La description doit être plus explicite et avoir au moins 30 caractères" },
+                  minLength: { value: 15, message: "La description doit être plus explicite et avoir au moins 15 caractères" },
                 })}
                 id="description"
                 rows={3}
