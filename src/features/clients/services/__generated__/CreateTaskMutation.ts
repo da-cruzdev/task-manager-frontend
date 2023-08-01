@@ -9,7 +9,7 @@
 
 export interface CreateTaskMutation_createTask {
   __typename: "Task";
-  id: string;
+  id: number;
   title: string;
   description: string;
   status: string;

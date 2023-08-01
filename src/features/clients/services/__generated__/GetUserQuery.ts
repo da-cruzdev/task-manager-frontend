@@ -9,7 +9,7 @@
 
 export interface GetUserQuery_user {
   __typename: "User";
-  id: string;
+  id: number;
   username: string;
   email: string;
   role: string;

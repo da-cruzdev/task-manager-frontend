@@ -4,10 +4,10 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: GetUserInfo
+// GraphQL query operation: GetAllUsers
 // ====================================================
 
-export interface GetUserInfo_getUserInfo {
+export interface GetAllUsers_users {
   __typename: "User";
   id: number;
   username: string;
@@ -15,6 +15,6 @@ export interface GetUserInfo_getUserInfo {
   role: string;
 }
 
-export interface GetUserInfo {
-  getUserInfo: GetUserInfo_getUserInfo;
+export interface GetAllUsers {
+  users: GetAllUsers_users[];
 }
