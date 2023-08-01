@@ -1,6 +1,7 @@
 import client from "../../../app/graphql"
 import { User } from "../../auth/interfaces/signData.interfaces"
-import { GET_USER_INFO } from "./queries"
+import { CreateTaskData, Task } from "../interfaces/tasks.interfaces"
+import { CREATE_TASK, GET_USER_INFO } from "./queries"
 
 class ClientService {
   async getUserInfo(): Promise<User> {
@@ -16,6 +17,17 @@ class ClientService {
 
   getToken(): string | null {
     return localStorage.getItem("@token")
+  }
+
+  async createTask(data: CreateTaskData): Promise<Task> {
+    try {
+      const { title, description, assignedTo, deadline } = data
+      const response = await client.mutate({ mutation: CREATE_TASK, variables: { title, description, assignedTo, deadline } })
+
+      return response.data.createTask
+    } catch (error) {
+      throw error
+    }
   }
 }
 

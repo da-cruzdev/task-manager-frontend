@@ -1,7 +1,11 @@
-import { Modal, Label, TextInput, Button, Select, Textarea } from "flowbite-react"
+import { Modal, Label, TextInput, Button, Select, Textarea, Spinner } from "flowbite-react"
 import React, { useState } from "react"
 import Datepicker, { DateValueType } from "react-tailwindcss-datepicker"
 import dayjs from "dayjs"
+import { AppDispatch, RootState, useAppDispatch } from "../../../../app/store"
+import { useSelector } from "react-redux"
+import { createTask } from "../../redux/taskSlice"
+import { CreateTaskData } from "../../interfaces/tasks.interfaces"
 
 type TaskModalProps = {
   open: boolean
@@ -22,12 +26,42 @@ const CreateTaskModal: React.FC<TaskModalProps> = ({ open, onClose }) => {
   const today = new Date()
   const formattedToday = new Date(today.getFullYear(), today.getMonth(), today.getDate())
 
+  const dispatch: AppDispatch = useAppDispatch()
+  const loading = useSelector((state: RootState) => state.task.loading)
+
+  const handleCreateTask = async (data: CreateTaskData) => {
+    const endDate = typeof value?.endDate === "string" ? new Date(value.endDate) : value?.endDate
+
+    if (!endDate) {
+      console.error("Deadline is not defined.")
+      return
+    }
+
+    const formattedDeadline = endDate
+
+    dispatch(
+      createTask({
+        title: "Go to office",
+        description: "For the Billing sprint",
+        assignedTo: 2,
+        deadline: formattedDeadline,
+      }),
+    )
+      .unwrap()
+      .then((data) => {
+        console.log(data)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
   return (
     <div>
       <Modal show={open} size="md" popup onClose={onClose}>
         <Modal.Header />
         <Modal.Body>
-          <div className="space-y-6">
+          <div className="space-y-3">
             <h3 className="text-xl font-medium text-gray-900 dark:text-white">Créer une tâche</h3>
             <div>
               <div className="mb-2 block">
@@ -59,7 +93,7 @@ const CreateTaskModal: React.FC<TaskModalProps> = ({ open, onClose }) => {
             </div>
 
             <div className="w-full">
-              <Button>Créer</Button>
+              <Button onClick={handleCreateTask}>{loading ? <Spinner></Spinner> : "Créer"}</Button>
             </div>
           </div>
         </Modal.Body>

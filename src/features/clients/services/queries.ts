@@ -20,3 +20,16 @@ export const GET_USER_INFO = gql`
     }
   }
 `
+
+export const CREATE_TASK = gql`
+  mutation CreateTaskMutation($title: String!, $description: String!, $assignedTo: Float!, $deadline: DateTime!) {
+    createTask(createTaskInput: { title: $title, description: $description, assignedTo: $assignedTo, deadline: $deadline }) {
+      id
+      title
+      description
+      status
+      assignedToId
+      deadline
+    }
+  }
+`

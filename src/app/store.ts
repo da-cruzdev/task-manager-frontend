@@ -3,6 +3,7 @@ import signupReducer from "../features/auth/containers/signup/signup-slice"
 import signinReducer from "../features/auth/containers/signin/signin-slice"
 import clientReducer from "../features/clients/redux/clientSlice"
 import userReducer from "../features/clients/redux/userSlice"
+import taskReducer from "../features/clients/redux/taskSlice"
 import { useDispatch } from "react-redux"
 
 export const store = configureStore({
@@ -11,6 +12,7 @@ export const store = configureStore({
     signin: signinReducer,
     client: clientReducer,
     user: userReducer,
+    task: taskReducer,
   },
 })
 
