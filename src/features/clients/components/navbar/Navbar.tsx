@@ -16,7 +16,7 @@ type UserProps = {
 
 export const UserDropdown: React.FC<UserProps & { handleLogout: () => void }> = ({ userEmail, handleLogout }) => {
   return (
-    <Dropdown inline label={<Avatar alt="User settings" rounded />}>
+    <Dropdown inline label={<Avatar alt="User settings" rounded status="online" statusPosition="top-right" />}>
       <Dropdown.Header>
         <span className="block truncate text-sm font-medium">{userEmail}</span>
       </Dropdown.Header>

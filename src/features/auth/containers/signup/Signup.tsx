@@ -32,7 +32,6 @@ export const Signup = () => {
     dispatch(signupUser(data))
       .unwrap()
       .then((data) => {
-        console.log(data)
         if (isUserLoggedIn) {
           navigate("/dashboard")
         }
