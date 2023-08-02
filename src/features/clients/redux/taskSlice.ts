@@ -1,5 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit"
-import { CreateTaskData, Task } from "../interfaces/tasks.interfaces"
+import { CreateTaskData, Task, Tasks } from "../interfaces/tasks.interfaces"
 import clientServices from "../services/client.services"
 import { ApolloError } from "@apollo/client"
 import toastr from "toastr"
@@ -9,7 +9,7 @@ interface TaskState {
   loading: boolean
   error: string | null
   task: Task | null
-  tasks: unknown
+  tasks: Tasks[] | null
 }
 
 const initialState: TaskState = {
@@ -35,7 +35,7 @@ export const createTask = createAsyncThunk<Task, CreateTaskData, { rejectValue: 
   },
 )
 
-export const getTasks = createAsyncThunk("task/getTasks", async (_, { rejectWithValue }) => {
+export const getTasks = createAsyncThunk<Tasks[], void, { rejectValue: string }>("task/getTasks", async (_, { rejectWithValue }) => {
   try {
     const response = await clientServices.getTasks()
     return response
@@ -67,13 +67,13 @@ const taskSlice = createSlice({
         state.loading = true
         state.error = null
       })
-      .addCase(getTasks.fulfilled, (state, action: PayloadAction<any>) => {
+      .addCase(getTasks.fulfilled, (state, action: PayloadAction<Tasks[]>) => {
         state.loading = false
         state.tasks = action.payload
       })
-      .addCase(getTasks.rejected, (state, action: PayloadAction<any>) => {
+      .addCase(getTasks.rejected, (state, action: PayloadAction<string | undefined>) => {
         state.loading = false
-        state.error = action.payload
+        state.error = action.payload ?? null
       })
   },
 })

@@ -1,6 +1,6 @@
 import client from "../../../app/graphql"
 import { User } from "../../auth/interfaces/signData.interfaces"
-import { CreateTaskData, Task } from "../interfaces/tasks.interfaces"
+import { CreateTaskData, Task, Tasks } from "../interfaces/tasks.interfaces"
 import { CREATE_TASK, GET_ALL_USERS, GET_TASKS, GET_USER_INFO } from "./queries"
 
 class ClientService {
@@ -36,10 +36,10 @@ class ClientService {
     }
   }
 
-  async getTasks(): Promise<any> {
+  async getTasks(): Promise<Tasks[]> {
     try {
       const response = await client.query({ query: GET_TASKS })
-      return response.data
+      return response.data.tasks
     } catch (error) {
       throw error
     }
