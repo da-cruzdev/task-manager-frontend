@@ -8,6 +8,7 @@ import AssignedTasks from "../../components/tasks/AssignedTasks"
 import TeamUsers from "../../components/users/TeamUsers"
 import { AppDispatch, useAppDispatch } from "../../../../app/store"
 import { getTasks } from "../../redux/taskSlice"
+import { getAllUsers } from "../../redux/userSlice"
 
 const Dashboard = () => {
   const dispatch: AppDispatch = useAppDispatch()
@@ -16,13 +17,20 @@ const Dashboard = () => {
     const fetchTasks = () => {
       dispatch(getTasks())
         .unwrap()
-        .then((data) => {
-          console.log(data)
-        })
+        .then(() => {})
         .catch((err) => {
           console.log(err)
         })
     }
+    const fetchUsers = async () => {
+      dispatch(getAllUsers())
+        .unwrap()
+        .then(() => {})
+        .catch((err) => {
+          console.log(err)
+        })
+    }
+    fetchUsers()
 
     fetchTasks()
   }, [dispatch])

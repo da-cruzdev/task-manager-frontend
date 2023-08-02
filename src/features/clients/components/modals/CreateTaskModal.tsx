@@ -77,9 +77,9 @@ const CreateTaskModal: React.FC<TaskModalProps> = ({ open, onClose, users }) => 
 
     dispatch(createTask(formDataWithDatePicker))
       .unwrap()
-      .then((data) => {
-        console.log(data)
+      .then(() => {
         reset()
+        onClose()
       })
       .catch((err) => {
         console.log(err)
