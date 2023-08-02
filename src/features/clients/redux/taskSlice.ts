@@ -44,6 +44,19 @@ export const getTasks = createAsyncThunk<Tasks[], void, { rejectValue: string }>
   }
 })
 
+export const deleteTask = createAsyncThunk<Task, number, { rejectValue: string }>("task/deleteTask", async (id: number, { rejectWithValue }) => {
+  try {
+    const response = await clientServices.deleteTask(id)
+    toastr.success("Tâche supprimée avec success..!!!")
+    return response
+  } catch (error: any) {
+    if (error instanceof ApolloError) {
+      toastr.error(error.message)
+    }
+    return rejectWithValue(error.message || "Erreur lors de la suppression de la tâche")
+  }
+})
+
 const taskSlice = createSlice({
   name: "task",
   initialState,
@@ -72,6 +85,18 @@ const taskSlice = createSlice({
         state.tasks = action.payload
       })
       .addCase(getTasks.rejected, (state, action: PayloadAction<string | undefined>) => {
+        state.loading = false
+        state.error = action.payload ?? null
+      })
+      .addCase(deleteTask.pending, (state) => {
+        state.loading = true
+        state.error = null
+      })
+      .addCase(deleteTask.fulfilled, (state) => {
+        state.loading = false
+        state.error = null
+      })
+      .addCase(deleteTask.rejected, (state, action: PayloadAction<string | undefined>) => {
         state.loading = false
         state.error = action.payload ?? null
       })

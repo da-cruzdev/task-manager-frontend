@@ -1,10 +1,12 @@
-import { Table } from "flowbite-react"
+import { Button, Table } from "flowbite-react"
 import React, { useEffect, useState } from "react"
 import { selectTasks, selectUser } from "../../redux/clientSelectors"
 import { useSelector } from "react-redux"
 import { FiEdit, FiTrash2 } from "react-icons/fi"
 import { Tasks } from "../../interfaces/tasks.interfaces"
 import { DeleteModal } from "../modals/DeleteModal"
+import { AppDispatch, useAppDispatch } from "../../../../app/store"
+import { deleteTask } from "../../redux/taskSlice"
 
 const CreatedTasks = () => {
   const [createdTasks, setCreatedTasks] = useState<Tasks[]>([])
@@ -14,6 +16,8 @@ const CreatedTasks = () => {
   const currentUser = useSelector(selectUser)
 
   const [openModal, setOpenModal] = useState(false)
+
+  const dispatch: AppDispatch = useAppDispatch()
 
   useEffect(() => {
     if (tasks && currentUser) {
@@ -28,6 +32,14 @@ const CreatedTasks = () => {
   }
 
   const handleDeleteConfirm = () => {
+    if (selectedTask) {
+      dispatch(deleteTask(selectedTask.id))
+        .unwrap()
+        .then()
+        .catch((err) => {
+          console.log(err)
+        })
+    }
     setOpenModal(false)
   }
 
@@ -55,9 +67,12 @@ const CreatedTasks = () => {
                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">{task.deadline?.toLocaleString()}</Table.Cell>
                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">{task.assignUser.username}</Table.Cell>
                 <Table.Cell className="flex mx-auto">
-                  <FiEdit color="blue" className="text-lg" />
-
-                  <FiTrash2 color="red" className="text-lg ms-3" onClick={() => handleDelete(task)} />
+                  <Button color="gray" size="xs" className=" me-3">
+                    <FiEdit color="blue" className="text-lg" />
+                  </Button>
+                  <Button color="gray" size="xs" onClick={() => handleDelete(task)}>
+                    <FiTrash2 color="red" className="text-lg" />
+                  </Button>
                 </Table.Cell>
               </Table.Row>
             ))}
