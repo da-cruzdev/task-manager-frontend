@@ -44,3 +44,58 @@ export const CREATE_TASK = gql`
     }
   }
 `
+
+export const GET_TASKS = gql`
+  query GetTasks {
+    tasks {
+      id
+      title
+      description
+      status
+      assignedToId
+      deadline
+      owner {
+        id
+        username
+        email
+        role
+        createdTasks {
+          id
+          title
+          description
+          status
+          assignedToId
+          deadline
+        }
+        assignedTasks {
+          id
+          title
+          description
+          status
+          deadline
+        }
+      }
+      assignUser {
+        id
+        username
+        email
+        role
+        createdTasks {
+          id
+          title
+          description
+          status
+          assignedToId
+          deadline
+        }
+        assignedTasks {
+          id
+          title
+          description
+          status
+          deadline
+        }
+      }
+    }
+  }
+`

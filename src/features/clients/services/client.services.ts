@@ -1,7 +1,7 @@
 import client from "../../../app/graphql"
 import { User } from "../../auth/interfaces/signData.interfaces"
 import { CreateTaskData, Task } from "../interfaces/tasks.interfaces"
-import { CREATE_TASK, GET_ALL_USERS, GET_USER_INFO } from "./queries"
+import { CREATE_TASK, GET_ALL_USERS, GET_TASKS, GET_USER_INFO } from "./queries"
 
 class ClientService {
   async getUserInfo(): Promise<User> {
@@ -35,6 +35,16 @@ class ClientService {
       throw error
     }
   }
+
+  async getTasks(): Promise<any> {
+    try {
+      const response = await client.query({ query: GET_TASKS })
+      return response.data
+    } catch (error) {
+      throw error
+    }
+  }
+
   getToken(): string | null {
     return localStorage.getItem("@token")
   }

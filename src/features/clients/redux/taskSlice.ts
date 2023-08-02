@@ -9,12 +9,14 @@ interface TaskState {
   loading: boolean
   error: string | null
   task: Task | null
+  tasks: unknown
 }
 
 const initialState: TaskState = {
   loading: false,
   error: null,
   task: null,
+  tasks: null,
 }
 
 export const createTask = createAsyncThunk<Task, CreateTaskData, { rejectValue: string }>(
@@ -32,6 +34,15 @@ export const createTask = createAsyncThunk<Task, CreateTaskData, { rejectValue: 
     }
   },
 )
+
+export const getTasks = createAsyncThunk("task/getTasks", async (_, { rejectWithValue }) => {
+  try {
+    const response = await clientServices.getTasks()
+    return response
+  } catch (error: any) {
+    return rejectWithValue(error.message || "Erreur lors de la récupération des tâches")
+  }
+})
 
 const taskSlice = createSlice({
   name: "task",
@@ -51,6 +62,18 @@ const taskSlice = createSlice({
       .addCase(createTask.rejected, (state, action: PayloadAction<string | undefined>) => {
         state.loading = false
         state.error = action.payload ?? null
+      })
+      .addCase(getTasks.pending, (state) => {
+        state.loading = true
+        state.error = null
+      })
+      .addCase(getTasks.fulfilled, (state, action: PayloadAction<any>) => {
+        state.loading = false
+        state.tasks = action.payload
+      })
+      .addCase(getTasks.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false
+        state.error = action.payload
       })
   },
 })

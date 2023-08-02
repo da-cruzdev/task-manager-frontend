@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import Navbar from "../../components/navbar/Navbar"
 import SidebarComponent from "../../components/sidebar/Sidebar"
 import { Route, Routes } from "react-router-dom"
@@ -6,8 +6,27 @@ import HomeComponent from "../../components/homeComponent/HomeComponent"
 import CreatedTasks from "../../components/tasks/CreatedTasks"
 import AssignedTasks from "../../components/tasks/AssignedTasks"
 import TeamUsers from "../../components/users/TeamUsers"
+import { AppDispatch, useAppDispatch } from "../../../../app/store"
+import { getTasks } from "../../redux/taskSlice"
 
 const Dashboard = () => {
+  const dispatch: AppDispatch = useAppDispatch()
+
+  useEffect(() => {
+    const fetchTasks = () => {
+      dispatch(getTasks())
+        .unwrap()
+        .then((data) => {
+          console.log(data)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    }
+
+    fetchTasks()
+  }, [dispatch])
+
   return (
     <div className="flex">
       <div className="w-1/5 w-64 h-screen ">
