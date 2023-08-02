@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { CreatedTaskCard } from "../cards/createdTask-card"
-import { UserTeamCard } from "../cards/UserTeamTask"
+import { UserTeamCard } from "../cards/UserTeamCard"
 import { TasksProgression } from "../cards/TasksProgression"
 import { getAllUsers } from "../../redux/userSlice"
 import { AppDispatch, useAppDispatch } from "../../../../app/store"

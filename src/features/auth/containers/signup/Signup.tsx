@@ -12,7 +12,6 @@ import { signupUser } from "./signup-slice"
 import { SignData } from "../../interfaces/signData.interfaces"
 import logo from "../logo.svg"
 import { Link, useNavigate } from "react-router-dom"
-import authServices from "../../services/auth.services"
 
 export const Signup = () => {
   const dispatch: AppDispatch = useAppDispatch()
@@ -26,15 +25,13 @@ export const Signup = () => {
   } = useForm()
 
   const navigate = useNavigate()
-  const isUserLoggedIn = authServices.isLoggedIn()
 
   const formSubmit = async (data: SignData) => {
     dispatch(signupUser(data))
       .unwrap()
       .then((data) => {
-        if (isUserLoggedIn) {
-          navigate("/dashboard")
-        }
+        if (data) navigate("/dashboard")
+
         reset()
       })
       .catch((error) => {
