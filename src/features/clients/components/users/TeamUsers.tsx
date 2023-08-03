@@ -22,7 +22,7 @@ const TeamUsers = () => {
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white mb-5">Membres de l'équipe</h1>
       </div>
-      <Table hoverable>
+      <Table>
         <Table.Head>
           <Table.HeadCell>Nom d'utilisateur</Table.HeadCell>
           <Table.HeadCell>Email</Table.HeadCell>

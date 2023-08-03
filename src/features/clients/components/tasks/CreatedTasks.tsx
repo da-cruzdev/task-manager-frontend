@@ -7,8 +7,16 @@ import { Tasks } from "../../interfaces/tasks.interfaces"
 import { DeleteModal } from "../modals/DeleteModal"
 import { AppDispatch, useAppDispatch } from "../../../../app/store"
 import { deleteTask } from "../../redux/taskSlice"
+import CreateTaskModal from "../modals/CreateTaskModal"
+import { User } from "../../../auth/interfaces/signData.interfaces"
+import { PlusIcon, ClipboardDocumentIcon } from "@heroicons/react/24/outline"
+import { SpeedDial, SpeedDialHandler, IconButton, SpeedDialContent, SpeedDialAction, Typography } from "@material-tailwind/react"
 
-const CreatedTasks = () => {
+type TaskCardProps = {
+  users: User[]
+}
+
+const CreatedTasks: React.FC<TaskCardProps> = ({ users }) => {
   const [createdTasks, setCreatedTasks] = useState<Tasks[]>([])
   const [selectedTask, setSelectedTask] = useState<Tasks | null>(null)
 
@@ -35,7 +43,9 @@ const CreatedTasks = () => {
     if (selectedTask) {
       dispatch(deleteTask(selectedTask.id))
         .unwrap()
-        .then()
+        .then(() => {
+          setCreatedTasks((prevTasks) => prevTasks.filter((task) => task.id !== selectedTask.id))
+        })
         .catch((err) => {
           console.log(err)
         })
@@ -45,9 +55,11 @@ const CreatedTasks = () => {
 
   return (
     <React.Fragment>
-      <div>
+      <div className="flex justify-between">
         <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white mb-5">Tâches créees</h1>
+        <DefaultSpeedDial users={users} />
       </div>
+
       <Table>
         <Table.Head>
           <Table.HeadCell>Titre</Table.HeadCell>
@@ -80,6 +92,37 @@ const CreatedTasks = () => {
       </Table>
       <DeleteModal isOpen={openModal} onClose={() => setOpenModal(false)} onConfirm={handleDeleteConfirm} />
     </React.Fragment>
+  )
+}
+
+export const DefaultSpeedDial: React.FC<TaskCardProps> = ({ users }) => {
+  const labelProps = {
+    variant: "small",
+    color: "blue",
+    className: "absolute top-2/4 -left-2/4 -translate-y-2/4 -translate-x-3/4 font-normal",
+  }
+
+  const [isModalOpen, setModalOpen] = useState(false)
+
+  return (
+    <div className="relative">
+      <div className="absolute top-0 right-0">
+        <SpeedDial placement="right">
+          <SpeedDialHandler>
+            <IconButton size="lg" className="rounded-full">
+              <PlusIcon className="h-5 w-5 transition-transform group-hover:rotate-45" />
+            </IconButton>
+          </SpeedDialHandler>
+          <SpeedDialContent>
+            <SpeedDialAction>
+              <ClipboardDocumentIcon className="h-5 w-5" onClick={() => setModalOpen(true)} />
+              <Typography {...labelProps}>Créer une tâche</Typography>
+            </SpeedDialAction>
+          </SpeedDialContent>
+        </SpeedDial>
+      </div>
+      <CreateTaskModal open={isModalOpen} onClose={() => setModalOpen(false)} users={users} />
+    </div>
   )
 }
 

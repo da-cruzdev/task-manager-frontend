@@ -4,7 +4,7 @@ import { HiUser } from "react-icons/hi"
 import { User } from "../../../auth/interfaces/signData.interfaces"
 
 export type UserTeamProps = {
-  users: User[]
+  users: User[] | null
 }
 
 export const UserTeamCard: React.FC<UserTeamProps> = ({ users }) => {
@@ -17,18 +17,19 @@ export const UserTeamCard: React.FC<UserTeamProps> = ({ users }) => {
           </h5>
 
           <Badge color="gray" className="flex" icon={HiUser} size="sm">
-            <p className="font-bold">{users.length}</p>
+            <p className="font-bold">{users?.length}</p>
           </Badge>
         </div>
         <div>
-          {users.map((user) => (
-            <div key={user.id}>
-              <div className="flex justify-between">
-                <Avatar rounded className="mt-3" size="sm" />
-                <p className="text-sm mt-5">{user.username}</p>
+          {users &&
+            users.map((user) => (
+              <div key={user.id}>
+                <div className="flex justify-between">
+                  <Avatar rounded className="mt-3" size="sm" />
+                  <p className="text-sm mt-5">{user.username}</p>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
       </Card>
     </div>

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import Navbar from "../../components/navbar/Navbar"
 import SidebarComponent from "../../components/sidebar/Sidebar"
 import { Route, Routes } from "react-router-dom"
@@ -9,8 +9,10 @@ import TeamUsers from "../../components/users/TeamUsers"
 import { AppDispatch, useAppDispatch } from "../../../../app/store"
 import { getTasks } from "../../redux/taskSlice"
 import { getAllUsers } from "../../redux/userSlice"
+import { User } from "../../../auth/interfaces/signData.interfaces"
 
 const Dashboard = () => {
+  const [users, setUsers] = useState<User[]>([])
   const dispatch: AppDispatch = useAppDispatch()
 
   useEffect(() => {
@@ -25,7 +27,9 @@ const Dashboard = () => {
     const fetchUsers = async () => {
       dispatch(getAllUsers())
         .unwrap()
-        .then(() => {})
+        .then((data) => {
+          setUsers(data)
+        })
         .catch((err) => {
           console.log(err)
         })
@@ -47,7 +51,7 @@ const Dashboard = () => {
         <div className="mt-9">
           <Routes>
             <Route path="" element={<HomeComponent />} />
-            <Route path="/tasks" element={<CreatedTasks />} />
+            <Route path="/tasks" element={<CreatedTasks users={users} />} />
             <Route path="/assign" element={<AssignedTasks />} />
             <Route path="/team-users" element={<TeamUsers />} />
           </Routes>

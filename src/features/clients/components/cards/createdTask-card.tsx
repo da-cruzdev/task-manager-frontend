@@ -2,18 +2,12 @@
 
 import { Button, Card } from "flowbite-react"
 import React, { useEffect, useState } from "react"
-import CreateTaskModal from "../modals/CreateTaskModal"
-import { User } from "../../../auth/interfaces/signData.interfaces"
 import { useSelector } from "react-redux"
 import { selectTasks, selectUser } from "../../redux/clientSelectors"
 import { Tasks } from "../../interfaces/tasks.interfaces"
+import { Link } from "react-router-dom"
 
-type TaskCardProps = {
-  users: User[]
-}
-
-export const CreatedTaskCard: React.FC<TaskCardProps> = ({ users }) => {
-  const [isModalOpen, setModalOpen] = useState(false)
+export const CreatedTaskCard = () => {
   const [createdTasks, setCreatedTasks] = useState<Tasks[]>([])
 
   const tasks = useSelector(selectTasks)
@@ -32,10 +26,11 @@ export const CreatedTaskCard: React.FC<TaskCardProps> = ({ users }) => {
         <p> Tâches créees </p>
       </h5>
       <p className="font-normal text-5xl font-bold text-gray-700 dark:text-gray-400 mx-auto"> {createdTasks?.length} </p>
-      <Button className="mt-9" onClick={() => setModalOpen(true)}>
-        <p>Créer une tâche</p>
-      </Button>
-      <CreateTaskModal open={isModalOpen} onClose={() => setModalOpen(false)} users={users} />
+      <Link to="/dashboard/tasks">
+        <Button className="mt-9 w-full">
+          <p>Voir les tâches créees</p>
+        </Button>
+      </Link>
     </Card>
   )
 }

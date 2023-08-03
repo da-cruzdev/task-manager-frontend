@@ -2,10 +2,9 @@ import { Button, Table } from "flowbite-react"
 import React, { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import { Tasks } from "../../interfaces/tasks.interfaces"
-import { FiEdit, FiTrash2 } from "react-icons/fi"
+import { FiEdit } from "react-icons/fi"
 
 import { selectTasks, selectUser } from "../../redux/clientSelectors"
-import { DeleteModal } from "../modals/DeleteModal"
 import { deleteTask } from "../../redux/taskSlice"
 import { AppDispatch, useAppDispatch } from "../../../../app/store"
 
@@ -36,7 +35,9 @@ const AssignedTasks = () => {
     if (selectedTask) {
       dispatch(deleteTask(selectedTask.id))
         .unwrap()
-        .then()
+        .then(() => {
+          setAssignedTasks((prevTasks) => prevTasks.filter((task) => task.id !== selectedTask.id))
+        })
         .catch((err) => {
           console.log(err)
         })
@@ -49,7 +50,7 @@ const AssignedTasks = () => {
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white mb-5">Tâches assignées</h1>
       </div>
-      <Table hoverable>
+      <Table>
         <Table.Head>
           <Table.HeadCell>Titre</Table.HeadCell>
           <Table.HeadCell>Descrption</Table.HeadCell>
@@ -71,15 +72,11 @@ const AssignedTasks = () => {
                   <Button color="gray" size="xs" className=" me-3">
                     <FiEdit color="blue" className="text-lg" />
                   </Button>
-                  <Button color="gray" size="xs" onClick={() => handleDelete(task)}>
-                    <FiTrash2 color="red" className="text-lg" />
-                  </Button>
                 </Table.Cell>
               </Table.Row>
             ))}
         </Table.Body>
       </Table>
-      <DeleteModal isOpen={openModal} onClose={() => setOpenModal(false)} onConfirm={handleDeleteConfirm} />
     </React.Fragment>
   )
 }
