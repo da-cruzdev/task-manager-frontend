@@ -11,7 +11,7 @@ export const UserTeamCard: React.FC<UserTeamProps> = ({ users }) => {
   return (
     <div>
       <Card className="max-w-2xs h-64 md:col-span-2 md:row-span-2">
-        <div className="flex justify-between mt-3">
+        <div className="flex justify-between">
           <h5 className="text-1xl font-bold tracking-tight text-gray-900 dark:text-white">
             <p> Membres de l'équipe </p>
           </h5>
