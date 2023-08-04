@@ -9,6 +9,7 @@ export interface UpdateTaskData {
   title?: string
   description?: string
   assignedTo?: number
+  status?: "PENDING" | "IN_PROGRESS" | "DONE"
   deadline?: any
 }
 

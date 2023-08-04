@@ -5,9 +5,10 @@ import Datepicker, { DateValueType } from "react-tailwindcss-datepicker"
 import { User } from "../../../auth/interfaces/signData.interfaces"
 import dayjs from "dayjs"
 import { useSelector } from "react-redux"
-import { RootState } from "../../../../app/store"
-import { Tasks } from "../../interfaces/tasks.interfaces"
+import { AppDispatch, RootState, useAppDispatch } from "../../../../app/store"
+import { Tasks, UpdateTaskData } from "../../interfaces/tasks.interfaces"
 import { selectUser } from "../../redux/clientSelectors"
+import { updateTask } from "../../redux/taskSlice"
 
 type TaskModalProps = {
   open: boolean
@@ -24,7 +25,6 @@ const UpdateTasksModal: React.FC<TaskModalProps & { selectedTask: Tasks | null }
   const {
     register,
     handleSubmit,
-    reset,
     setValue,
     formState: { errors },
   } = useForm()
@@ -34,7 +34,7 @@ const UpdateTasksModal: React.FC<TaskModalProps & { selectedTask: Tasks | null }
   const today = new Date()
   const formattedToday = new Date(today.getFullYear(), today.getMonth(), today.getDate())
 
-  const handleValueChange = (newValue: any) => {
+  const handleValueChange = (newValue: DateValueType) => {
     console.log("newValue:", newValue)
     setFormattedDeadline(newValue)
   }
@@ -43,7 +43,6 @@ const UpdateTasksModal: React.FC<TaskModalProps & { selectedTask: Tasks | null }
     if (selectedTask) {
       setValue("title", selectedTask.title)
       setValue("description", selectedTask.description)
-      setValue("assignedToId", selectedTask.assignUser.username)
       setValue("status", selectedTask.status)
       setFormattedDeadline({
         startDate: selectedTask.deadline ? dayjs(selectedTask.deadline).toDate() : new Date(),
@@ -51,6 +50,37 @@ const UpdateTasksModal: React.FC<TaskModalProps & { selectedTask: Tasks | null }
       })
     }
   }, [currentUser?.id, selectedTask, setValue])
+
+  const dispatch: AppDispatch = useAppDispatch()
+
+  const endDate = typeof formattedDeadline?.endDate === "string" ? new Date(formattedDeadline.endDate) : formattedDeadline?.endDate
+
+  const newDeadline = endDate
+
+  const handleUpdateTask = (data: UpdateTaskData) => {
+    if (selectedTask) {
+      const assignedToAsNumber = Number(data.assignedTo)
+      let oldAssignerTo
+      if (selectedTask?.owner.id !== currentUser?.id) {
+        oldAssignerTo = currentUser?.id
+        console.log("============", oldAssignerTo)
+      }
+      if (data) {
+        const updateData = {
+          id: selectedTask.id,
+          data: { ...data, assignedTo: assignedToAsNumber || oldAssignerTo, deadline: newDeadline },
+        }
+
+        dispatch(updateTask(updateData))
+          .unwrap()
+          .then((data) => {
+            console.log(data)
+            onClose()
+          })
+          .catch((err) => console.log(err))
+      }
+    }
+  }
 
   return (
     <div>
@@ -78,7 +108,7 @@ const UpdateTasksModal: React.FC<TaskModalProps & { selectedTask: Tasks | null }
                     </>
                   )
                 }
-                disabled={selectedTask?.owner.id !== currentUser?.id}
+                readOnly={selectedTask?.owner.id !== currentUser?.id}
               />
             </div>
             <div>
@@ -101,7 +131,7 @@ const UpdateTasksModal: React.FC<TaskModalProps & { selectedTask: Tasks | null }
                     </>
                   )
                 }
-                disabled={selectedTask?.owner.id !== currentUser?.id}
+                readOnly={selectedTask?.owner.id !== currentUser?.id}
               />
             </div>
             <div>
@@ -109,9 +139,7 @@ const UpdateTasksModal: React.FC<TaskModalProps & { selectedTask: Tasks | null }
                 <Label htmlFor="assignedTo" value="Assignée à" />
               </div>
               <Select
-                {...register("assignedTo", {
-                  required: "Ce champ est requis",
-                })}
+                {...register("assignedTo")}
                 id="assignedTo"
                 color={errors.assignedTo && "failure"}
                 helperText={
@@ -122,9 +150,9 @@ const UpdateTasksModal: React.FC<TaskModalProps & { selectedTask: Tasks | null }
                     </>
                   )
                 }
+                defaultValue={selectedTask?.assignedToId}
                 disabled={selectedTask?.owner.id !== currentUser?.id}
               >
-                <option></option>
                 {users.map((user) => (
                   <option key={user.id} value={user.id}>
                     {user.username}
@@ -171,7 +199,7 @@ const UpdateTasksModal: React.FC<TaskModalProps & { selectedTask: Tasks | null }
             </div>
 
             <div className="w-full">
-              <Button>{loading ? <Spinner></Spinner> : "Créer"}</Button>
+              <Button onClick={handleSubmit(handleUpdateTask)}>{loading ? <Spinner></Spinner> : "Créer"}</Button>
             </div>
           </div>
         </Modal.Body>
