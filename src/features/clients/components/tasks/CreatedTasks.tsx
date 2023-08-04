@@ -96,12 +96,6 @@ const CreatedTasks: React.FC<TaskCardProps> = ({ users }) => {
 }
 
 export const DefaultSpeedDial: React.FC<TaskCardProps> = ({ users }) => {
-  const labelProps = {
-    variant: "small",
-    color: "blue",
-    className: "absolute top-2/4 -left-2/4 -translate-y-2/4 -translate-x-3/4 font-normal",
-  }
-
   const [isModalOpen, setModalOpen] = useState(false)
 
   return (
@@ -115,8 +109,10 @@ export const DefaultSpeedDial: React.FC<TaskCardProps> = ({ users }) => {
           </SpeedDialHandler>
           <SpeedDialContent>
             <SpeedDialAction>
-              <ClipboardDocumentIcon className="h-5 w-5" onClick={() => setModalOpen(true)} />
-              <Typography {...labelProps}>Créer une tâche</Typography>
+              <ClipboardDocumentIcon color="blue" className="h-5 w-5" onClick={() => setModalOpen(true)} />
+              <Typography color="blue" className="text-xs font-normal">
+                Créer
+              </Typography>
             </SpeedDialAction>
           </SpeedDialContent>
         </SpeedDial>

@@ -99,6 +99,61 @@ export const GET_TASKS = gql`
     }
   }
 `
+export const UPDATE_TASK = gql`
+  mutation UpdateTask($id: Int!, $title: String!, $description: String!, $status: String!, $assignedTo: Float!, $deadline: DateTime!) {
+    updateTask(id: $id, data: { title: $title, description: $description, status: $status, assignedTo: $assignedTo, deadline: $deadline }) {
+      id
+      title
+      description
+      status
+      assignedToId
+      deadline
+      owner {
+        id
+        username
+        email
+        role
+        createdTasks {
+          id
+          title
+          description
+          status
+          assignedToId
+          deadline
+        }
+        assignedTasks {
+          id
+          title
+          description
+          status
+          deadline
+        }
+      }
+      assignUser {
+        id
+        username
+        email
+        role
+        createdTasks {
+          id
+          title
+          description
+          status
+          assignedToId
+          deadline
+        }
+        assignedTasks {
+          id
+          title
+          description
+          status
+          deadline
+        }
+      }
+    }
+  }
+`
+
 export const DELETE_TASK = gql`
   mutation DeleteTask($id: Int!) {
     removeTask(id: $id) {

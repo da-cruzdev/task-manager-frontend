@@ -6,10 +6,10 @@
 import { TaskStatus } from "./../../../../../__generated__/globalTypes";
 
 // ====================================================
-// GraphQL query operation: GetTasks
+// GraphQL mutation operation: UpdateTask
 // ====================================================
 
-export interface GetTasks_tasks_owner_createdTasks {
+export interface UpdateTask_updateTask_owner_createdTasks {
   __typename: "Task";
   id: number;
   title: string;
@@ -19,7 +19,7 @@ export interface GetTasks_tasks_owner_createdTasks {
   deadline: any | null;
 }
 
-export interface GetTasks_tasks_owner_assignedTasks {
+export interface UpdateTask_updateTask_owner_assignedTasks {
   __typename: "Task";
   id: number;
   title: string;
@@ -28,17 +28,17 @@ export interface GetTasks_tasks_owner_assignedTasks {
   deadline: any | null;
 }
 
-export interface GetTasks_tasks_owner {
+export interface UpdateTask_updateTask_owner {
   __typename: "User";
   id: number;
   username: string;
   email: string;
   role: string;
-  createdTasks: GetTasks_tasks_owner_createdTasks[];
-  assignedTasks: GetTasks_tasks_owner_assignedTasks[];
+  createdTasks: UpdateTask_updateTask_owner_createdTasks[];
+  assignedTasks: UpdateTask_updateTask_owner_assignedTasks[];
 }
 
-export interface GetTasks_tasks_assignUser_createdTasks {
+export interface UpdateTask_updateTask_assignUser_createdTasks {
   __typename: "Task";
   id: number;
   title: string;
@@ -48,7 +48,7 @@ export interface GetTasks_tasks_assignUser_createdTasks {
   deadline: any | null;
 }
 
-export interface GetTasks_tasks_assignUser_assignedTasks {
+export interface UpdateTask_updateTask_assignUser_assignedTasks {
   __typename: "Task";
   id: number;
   title: string;
@@ -57,17 +57,17 @@ export interface GetTasks_tasks_assignUser_assignedTasks {
   deadline: any | null;
 }
 
-export interface GetTasks_tasks_assignUser {
+export interface UpdateTask_updateTask_assignUser {
   __typename: "User";
   id: number;
   username: string;
   email: string;
   role: string;
-  createdTasks: GetTasks_tasks_assignUser_createdTasks[];
-  assignedTasks: GetTasks_tasks_assignUser_assignedTasks[];
+  createdTasks: UpdateTask_updateTask_assignUser_createdTasks[];
+  assignedTasks: UpdateTask_updateTask_assignUser_assignedTasks[];
 }
 
-export interface GetTasks_tasks {
+export interface UpdateTask_updateTask {
   __typename: "Task";
   id: number;
   title: string;
@@ -75,10 +75,19 @@ export interface GetTasks_tasks {
   status: TaskStatus;
   assignedToId: number;
   deadline: any | null;
-  owner: GetTasks_tasks_owner;
-  assignUser: GetTasks_tasks_assignUser;
+  owner: UpdateTask_updateTask_owner;
+  assignUser: UpdateTask_updateTask_assignUser;
 }
 
-export interface GetTasks {
-  tasks: GetTasks_tasks[];
+export interface UpdateTask {
+  updateTask: UpdateTask_updateTask;
+}
+
+export interface UpdateTaskVariables {
+  id: number;
+  title: string;
+  description: string;
+  status: string;
+  assignedTo: number;
+  deadline: any;
 }

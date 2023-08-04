@@ -3,6 +3,8 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
+import { TaskStatus } from "./../../../../../__generated__/globalTypes";
+
 // ====================================================
 // GraphQL mutation operation: CreateTaskMutation
 // ====================================================
@@ -12,7 +14,7 @@ export interface CreateTaskMutation_createTask {
   id: number;
   title: string;
   description: string;
-  status: string;
+  status: TaskStatus;
   assignedToId: number;
   deadline: any | null;
 }

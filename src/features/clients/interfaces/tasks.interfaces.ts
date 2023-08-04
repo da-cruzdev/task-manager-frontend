@@ -5,6 +5,13 @@ export interface CreateTaskData {
   deadline: Date
 }
 
+export interface UpdateTaskData {
+  title?: string
+  description?: string
+  assignedTo?: number
+  deadline?: any
+}
+
 export interface Task {
   id: number
   title: string

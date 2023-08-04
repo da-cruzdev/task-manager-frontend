@@ -1,5 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit"
-import { CreateTaskData, Task, Tasks } from "../interfaces/tasks.interfaces"
+import { CreateTaskData, Task, Tasks, UpdateTaskData } from "../interfaces/tasks.interfaces"
 import clientServices from "../services/client.services"
 import { ApolloError } from "@apollo/client"
 import toastr from "toastr"
@@ -31,6 +31,22 @@ export const createTask = createAsyncThunk<Task, CreateTaskData, { rejectValue: 
         toastr.error(error.message)
       }
       return rejectWithValue(error.message || "Erreur lors de la création de la tâche")
+    }
+  },
+)
+
+export const updateTask = createAsyncThunk<Task, { id: number; data: UpdateTaskData }, { rejectValue: string }>(
+  "task/updateTask",
+  async ({ id, data }, { rejectWithValue }) => {
+    try {
+      const response = await clientServices.uppdateTask(id, data)
+      toastr.success("Tâche modifiée avec success..!!!")
+      return response
+    } catch (error: any) {
+      if (error instanceof ApolloError) {
+        toastr.error(error.message)
+      }
+      return rejectWithValue(error.message || "Erreur lors de la modification de la tâche")
     }
   },
 )
@@ -85,6 +101,18 @@ const taskSlice = createSlice({
         state.tasks = action.payload
       })
       .addCase(getTasks.rejected, (state, action: PayloadAction<string | undefined>) => {
+        state.loading = false
+        state.error = action.payload ?? null
+      })
+      .addCase(updateTask.pending, (state) => {
+        state.loading = true
+        state.error = null
+      })
+      .addCase(updateTask.fulfilled, (state, action: PayloadAction<Task>) => {
+        state.loading = false
+        state.task = action.payload
+      })
+      .addCase(updateTask.rejected, (state, action: PayloadAction<string | undefined>) => {
         state.loading = false
         state.error = action.payload ?? null
       })

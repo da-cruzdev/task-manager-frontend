@@ -7,6 +7,15 @@
 // START Enums and Input Objects
 //==============================================================
 
+/**
+ * Statut de la tâche
+ */
+export enum TaskStatus {
+  DONE = "DONE",
+  IN_PROGRESS = "IN_PROGRESS",
+  PENDING = "PENDING",
+}
+
 //==============================================================
 // END Enums and Input Objects
 //==============================================================
