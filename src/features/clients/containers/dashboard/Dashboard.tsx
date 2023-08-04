@@ -52,7 +52,7 @@ const Dashboard = () => {
           <Routes>
             <Route path="" element={<HomeComponent />} />
             <Route path="/tasks" element={<CreatedTasks users={users} />} />
-            <Route path="/assign" element={<AssignedTasks />} />
+            <Route path="/assign" element={<AssignedTasks users={users} />} />
             <Route path="/team-users" element={<TeamUsers />} />
           </Routes>
         </div>

@@ -11,6 +11,7 @@ import CreateTaskModal from "../modals/CreateTaskModal"
 import { User } from "../../../auth/interfaces/signData.interfaces"
 import { PlusIcon, ClipboardDocumentIcon } from "@heroicons/react/24/outline"
 import { SpeedDial, SpeedDialHandler, IconButton, SpeedDialContent, SpeedDialAction, Typography } from "@material-tailwind/react"
+import UpdateTasksModal from "../modals/UpdateTasksModal"
 
 type TaskCardProps = {
   users: User[]
@@ -19,6 +20,8 @@ type TaskCardProps = {
 const CreatedTasks: React.FC<TaskCardProps> = ({ users }) => {
   const [createdTasks, setCreatedTasks] = useState<Tasks[]>([])
   const [selectedTask, setSelectedTask] = useState<Tasks | null>(null)
+  const [updateModalOpen, setUpdateModalOpen] = useState(false)
+  const [selectedTaskForUpdate, setSelectedTaskForUpdate] = useState<Tasks | null>(null)
 
   const tasks = useSelector(selectTasks)
   const currentUser = useSelector(selectUser)
@@ -79,7 +82,15 @@ const CreatedTasks: React.FC<TaskCardProps> = ({ users }) => {
                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">{task.deadline?.toLocaleString()}</Table.Cell>
                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">{task.assignUser.username}</Table.Cell>
                 <Table.Cell className="flex mx-auto">
-                  <Button color="gray" size="xs" className=" me-3">
+                  <Button
+                    color="gray"
+                    size="xs"
+                    className=" me-3"
+                    onClick={() => {
+                      setUpdateModalOpen(true)
+                      setSelectedTaskForUpdate(task)
+                    }}
+                  >
                     <FiEdit color="blue" className="text-lg" />
                   </Button>
                   <Button color="gray" size="xs" onClick={() => handleDelete(task)}>
@@ -90,6 +101,7 @@ const CreatedTasks: React.FC<TaskCardProps> = ({ users }) => {
             ))}
         </Table.Body>
       </Table>
+      <UpdateTasksModal open={updateModalOpen} onClose={() => setUpdateModalOpen(false)} users={users} selectedTask={selectedTaskForUpdate} />
       <DeleteModal isOpen={openModal} onClose={() => setOpenModal(false)} onConfirm={handleDeleteConfirm} />
     </React.Fragment>
   )

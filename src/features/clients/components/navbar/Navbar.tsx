@@ -9,7 +9,6 @@ import { User } from "../../../auth/interfaces/signData.interfaces"
 import { logoutUser } from "../../redux/userSlice"
 import { useNavigate } from "react-router-dom"
 import client from "../../../../app/graphql"
-import { io } from "socket.io-client"
 
 type UserProps = {
   userEmail?: string
@@ -47,23 +46,23 @@ export default function NavbarComponent() {
     }
     user()
 
-    const socket = io("http://localhost:4000")
+    // const socket = io("http://localhost:4000")
 
-    socket.on("connect", () => {
-      console.log("connected===================>")
-    })
+    // socket.on("connect", () => {
+    //   console.log("connected===================>")
+    // })
 
-    socket.emit("message", " Wilfried", (data: string) => {
-      console.log(data)
-    })
+    // socket.emit("message", " Wilfried", (data: string) => {
+    //   console.log(data)
+    // })
 
-    socket.on("notification", (data: any) => {
-      console.log("notification:", data)
-    })
+    // socket.on("notification", (data: any) => {
+    //   console.log("notification:", data)
+    // })
 
-    return () => {
-      socket.close()
-    }
+    // return () => {
+    //   socket.close()
+    // }
   }, [dispatch])
 
   const onLogout = async () => {

@@ -5,16 +5,21 @@ import { Tasks } from "../../interfaces/tasks.interfaces"
 import { FiEdit } from "react-icons/fi"
 
 import { selectTasks, selectUser } from "../../redux/clientSelectors"
-import { deleteTask } from "../../redux/taskSlice"
 import { AppDispatch, useAppDispatch } from "../../../../app/store"
+import UpdateTasksModal from "../modals/UpdateTasksModal"
+import { User } from "../../../auth/interfaces/signData.interfaces"
 
-const AssignedTasks = () => {
+type TaskCardProps = {
+  users: User[]
+}
+
+const AssignedTasks: React.FC<TaskCardProps> = ({ users }) => {
   const [assignedTasks, setAssignedTasks] = useState<Tasks[]>([])
-  const [selectedTask, setSelectedTask] = useState<Tasks | null>(null)
+  const [updateModalOpen, setUpdateModalOpen] = useState(false)
+  const [selectedTaskForUpdate, setSelectedTaskForUpdate] = useState<Tasks | null>(null)
 
   const tasks = useSelector(selectTasks)
   const currentUser = useSelector(selectUser)
-  const [openModal, setOpenModal] = useState(false)
 
   const dispatch: AppDispatch = useAppDispatch()
 
@@ -25,25 +30,6 @@ const AssignedTasks = () => {
       setAssignedTasks(userAssignedTasks)
     }
   }, [currentUser, tasks])
-
-  const handleDelete = (task: Tasks) => {
-    setSelectedTask(task)
-    setOpenModal(true)
-  }
-
-  const handleDeleteConfirm = () => {
-    if (selectedTask) {
-      dispatch(deleteTask(selectedTask.id))
-        .unwrap()
-        .then(() => {
-          setAssignedTasks((prevTasks) => prevTasks.filter((task) => task.id !== selectedTask.id))
-        })
-        .catch((err) => {
-          console.log(err)
-        })
-    }
-    setOpenModal(false)
-  }
 
   return (
     <React.Fragment>
@@ -69,7 +55,15 @@ const AssignedTasks = () => {
                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">{task.deadline?.toLocaleString()}</Table.Cell>
                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">{task.owner.username}</Table.Cell>
                 <Table.Cell className="flex mx-auto">
-                  <Button color="gray" size="xs" className=" me-3">
+                  <Button
+                    color="gray"
+                    size="xs"
+                    className=" me-3"
+                    onClick={() => {
+                      setUpdateModalOpen(true)
+                      setSelectedTaskForUpdate(task)
+                    }}
+                  >
                     <FiEdit color="blue" className="text-lg" />
                   </Button>
                 </Table.Cell>
@@ -77,6 +71,7 @@ const AssignedTasks = () => {
             ))}
         </Table.Body>
       </Table>
+      <UpdateTasksModal open={updateModalOpen} onClose={() => setUpdateModalOpen(false)} users={users} selectedTask={selectedTaskForUpdate} />
     </React.Fragment>
   )
 }
