@@ -25,7 +25,7 @@ class ClientService {
     }
   }
 
-  async createTask(data: CreateTaskData): Promise<Task> {
+  async createTask(data: CreateTaskData): Promise<Tasks> {
     try {
       const { title, description, assignedTo, deadline } = data
       const response = await client.mutate({ mutation: CREATE_TASK, variables: { title, description, assignedTo, deadline } })

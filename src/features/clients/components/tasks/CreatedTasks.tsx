@@ -3,10 +3,10 @@ import React, { useEffect, useState } from "react"
 import { selectTasks, selectUser } from "../../redux/clientSelectors"
 import { useSelector } from "react-redux"
 import { FiEdit, FiTrash2 } from "react-icons/fi"
-import { Tasks } from "../../interfaces/tasks.interfaces"
+import { CreateTaskData, Tasks } from "../../interfaces/tasks.interfaces"
 import { DeleteModal } from "../modals/DeleteModal"
 import { AppDispatch, useAppDispatch } from "../../../../app/store"
-import { deleteTask, updateTask } from "../../redux/taskSlice"
+import { createTask, deleteTask, updateTask } from "../../redux/taskSlice"
 import CreateTaskModal from "../modals/CreateTaskModal"
 import { User } from "../../../auth/interfaces/signData.interfaces"
 import { PlusIcon, ClipboardDocumentIcon } from "@heroicons/react/24/outline"
@@ -15,9 +15,14 @@ import UpdateTasksModal from "../modals/UpdateTasksModal"
 
 type TaskCardProps = {
   users: User[]
+  handleSubmit: (data: CreateTaskData) => void
 }
 
-const CreatedTasks: React.FC<TaskCardProps> = ({ users }) => {
+type CreateTaskCardProps = {
+  users: User[]
+}
+
+const CreatedTasks: React.FC<CreateTaskCardProps> = ({ users }) => {
   const [createdTasks, setCreatedTasks] = useState<Tasks[]>([])
   const [selectedTask, setSelectedTask] = useState<Tasks | null>(null)
   const [updateModalOpen, setUpdateModalOpen] = useState(false)
@@ -33,17 +38,32 @@ const CreatedTasks: React.FC<TaskCardProps> = ({ users }) => {
   useEffect(() => {
     if (tasks && currentUser) {
       const userCreatedTasks = tasks.filter((task) => task.owner.id === currentUser.id)
-      setCreatedTasks(userCreatedTasks)
+      setCreatedTasks(userCreatedTasks.reverse())
     }
   }, [currentUser, tasks])
+
+  const handleCreate = (data: CreateTaskData) => {
+    dispatch(createTask(data))
+      .unwrap()
+      .then((newTask: Tasks) => {
+        console.log(data)
+        setCreatedTasks((oldTasks) => {
+          const filteredTasks = oldTasks.filter((task) => task.id !== newTask.id)
+          return [newTask, ...filteredTasks]
+        })
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
 
   const handleUpdate = (data: any) => {
     dispatch(updateTask(data))
       .unwrap()
-      .then((newTask: Tasks) => {
+      .then((updatedTask: Tasks) => {
         setCreatedTasks((oldTasks) => {
-          const filteredTasks = oldTasks.filter((task) => task.id !== newTask.id)
-          return [newTask, ...filteredTasks]
+          const filteredTasks = oldTasks.filter((task) => task.id !== updatedTask.id)
+          return [updatedTask, ...filteredTasks]
         })
 
         setUpdateModalOpen(false)
@@ -76,7 +96,7 @@ const CreatedTasks: React.FC<TaskCardProps> = ({ users }) => {
     <React.Fragment>
       <div className="flex justify-between">
         <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white mb-5">Tâches créees</h1>
-        <DefaultSpeedDial users={users} />
+        <DefaultSpeedDial users={users} handleSubmit={handleCreate} />
       </div>
 
       <Table>
@@ -129,7 +149,7 @@ const CreatedTasks: React.FC<TaskCardProps> = ({ users }) => {
   )
 }
 
-export const DefaultSpeedDial: React.FC<TaskCardProps> = ({ users }) => {
+export const DefaultSpeedDial: React.FC<TaskCardProps> = ({ users, handleSubmit }) => {
   const [isModalOpen, setModalOpen] = useState(false)
 
   return (
@@ -151,7 +171,8 @@ export const DefaultSpeedDial: React.FC<TaskCardProps> = ({ users }) => {
           </SpeedDialContent>
         </SpeedDial>
       </div>
-      <CreateTaskModal open={isModalOpen} onClose={() => setModalOpen(false)} users={users} />
+
+      <CreateTaskModal open={isModalOpen} onClose={() => setModalOpen(false)} users={users} onSubmit={handleSubmit} />
     </div>
   )
 }

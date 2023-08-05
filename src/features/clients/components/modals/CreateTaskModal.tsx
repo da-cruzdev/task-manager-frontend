@@ -2,16 +2,17 @@ import { Modal, Label, TextInput, Button, Select, Textarea, Spinner } from "flow
 import React, { useState } from "react"
 import Datepicker, { DateValueType } from "react-tailwindcss-datepicker"
 import dayjs from "dayjs"
-import { AppDispatch, RootState, useAppDispatch } from "../../../../app/store"
+import { RootState } from "../../../../app/store"
 import { useSelector } from "react-redux"
-import { createTask } from "../../redux/taskSlice"
 import { User } from "../../../auth/interfaces/signData.interfaces"
 import { useForm } from "react-hook-form"
+import { CreateTaskData } from "../../interfaces/tasks.interfaces"
 
 type TaskModalProps = {
   open: boolean
   onClose: () => void
   users: User[]
+  onSubmit: (data: CreateTaskData) => void
 }
 
 type TaskFormData = {
@@ -34,7 +35,7 @@ export const useDatePicker = (initialValue: DateValueType) => {
   }
 }
 
-const CreateTaskModal: React.FC<TaskModalProps> = ({ open, onClose, users }) => {
+const CreateTaskModal: React.FC<TaskModalProps> = ({ open, onClose, users, onSubmit }) => {
   const { value, onChange } = useDatePicker({
     startDate: new Date(),
     endDate: dayjs(new Date()).add(1, "month").toDate(),
@@ -45,7 +46,6 @@ const CreateTaskModal: React.FC<TaskModalProps> = ({ open, onClose, users }) => 
     onChange(newValue)
   }
 
-  const dispatch: AppDispatch = useAppDispatch()
   const loading = useSelector((state: RootState) => state.task.loading)
 
   const today = new Date()
@@ -54,7 +54,6 @@ const CreateTaskModal: React.FC<TaskModalProps> = ({ open, onClose, users }) => 
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm<TaskFormData>()
 
@@ -75,15 +74,9 @@ const CreateTaskModal: React.FC<TaskModalProps> = ({ open, onClose, users }) => 
       deadline: formattedDeadline,
     }
 
-    dispatch(createTask(formDataWithDatePicker))
-      .unwrap()
-      .then(() => {
-        reset()
-        onClose()
-      })
-      .catch((err) => {
-        console.log(err)
-      })
+    if (formDataWithDatePicker) {
+      onSubmit(formDataWithDatePicker)
+    }
   }
 
   return (

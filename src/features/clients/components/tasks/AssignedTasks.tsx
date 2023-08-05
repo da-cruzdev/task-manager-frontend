@@ -26,7 +26,7 @@ const AssignedTasks: React.FC<TaskCardProps> = ({ users }) => {
     if (tasks && currentUser) {
       const userAssignedTasks = tasks.filter((task) => task.assignedToId === currentUser.id)
 
-      setAssignedTasks(userAssignedTasks)
+      setAssignedTasks(userAssignedTasks.reverse())
     }
   }, [currentUser, tasks])
 

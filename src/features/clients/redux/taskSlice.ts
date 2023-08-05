@@ -8,7 +8,7 @@ import "toastr/build/toastr.css"
 interface TaskState {
   loading: boolean
   error: string | null
-  task: Task | null
+  task: Tasks | null
   tasks: Tasks[] | null
   updatedTask: Tasks | null
 }
@@ -21,7 +21,7 @@ const initialState: TaskState = {
   updatedTask: null,
 }
 
-export const createTask = createAsyncThunk<Task, CreateTaskData, { rejectValue: string }>(
+export const createTask = createAsyncThunk<Tasks, CreateTaskData, { rejectValue: string }>(
   "task/createTask",
   async (data: CreateTaskData, { rejectWithValue }) => {
     try {
@@ -85,7 +85,7 @@ const taskSlice = createSlice({
         state.loading = true
         state.error = null
       })
-      .addCase(createTask.fulfilled, (state, action: PayloadAction<Task>) => {
+      .addCase(createTask.fulfilled, (state, action: PayloadAction<Tasks>) => {
         state.loading = false
         state.error = null
         state.task = action.payload
