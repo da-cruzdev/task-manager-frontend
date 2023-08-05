@@ -1,15 +1,22 @@
 "use client"
 import { Sidebar } from "flowbite-react"
 import { HiClipboardCopy, HiClipboard, HiHome, HiUserGroup } from "react-icons/hi"
-import { NavLink } from "react-router-dom"
-import { useState } from "react"
+import { NavLink, useLocation } from "react-router-dom"
+import { useEffect, useState } from "react"
 
 export default function SidebarComponent() {
+  const location = useLocation()
   const [activeItem, setActiveItem] = useState("dashboard")
 
   const handleItemActive = (item: string) => {
     setActiveItem(item)
   }
+
+  useEffect(() => {
+    const pathName = location.pathname
+    const lastPath = pathName.substring(pathName.lastIndexOf("/") + 1)
+    setActiveItem(lastPath)
+  }, [location.pathname])
 
   return (
     <Sidebar aria-label="Default sidebar example" className="h-screen">
