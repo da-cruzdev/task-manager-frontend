@@ -45,10 +45,10 @@ class ClientService {
     }
   }
 
-  async uppdateTask(id: number, data: UpdateTaskData): Promise<Task> {
+  async uppdateTask(id: number, data: UpdateTaskData): Promise<Tasks> {
     try {
       const response = await client.mutate({ mutation: UPDATE_TASK, variables: { id, ...data } })
-      return response.data
+      return response.data.updateTask
     } catch (error) {
       throw error
     }

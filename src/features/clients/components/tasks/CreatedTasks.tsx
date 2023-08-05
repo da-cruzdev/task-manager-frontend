@@ -6,7 +6,7 @@ import { FiEdit, FiTrash2 } from "react-icons/fi"
 import { Tasks } from "../../interfaces/tasks.interfaces"
 import { DeleteModal } from "../modals/DeleteModal"
 import { AppDispatch, useAppDispatch } from "../../../../app/store"
-import { deleteTask } from "../../redux/taskSlice"
+import { deleteTask, updateTask } from "../../redux/taskSlice"
 import CreateTaskModal from "../modals/CreateTaskModal"
 import { User } from "../../../auth/interfaces/signData.interfaces"
 import { PlusIcon, ClipboardDocumentIcon } from "@heroicons/react/24/outline"
@@ -36,6 +36,22 @@ const CreatedTasks: React.FC<TaskCardProps> = ({ users }) => {
       setCreatedTasks(userCreatedTasks)
     }
   }, [currentUser, tasks])
+
+  const handleUpdate = (data: any) => {
+    dispatch(updateTask(data))
+      .unwrap()
+      .then((newTask: Tasks) => {
+        setCreatedTasks((oldTasks) => {
+          const filteredTasks = oldTasks.filter((task) => task.id !== newTask.id)
+          return [newTask, ...filteredTasks]
+        })
+
+        setUpdateModalOpen(false)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
 
   const handleDelete = (task: Tasks) => {
     setSelectedTask(task)
@@ -101,7 +117,13 @@ const CreatedTasks: React.FC<TaskCardProps> = ({ users }) => {
             ))}
         </Table.Body>
       </Table>
-      <UpdateTasksModal open={updateModalOpen} onClose={() => setUpdateModalOpen(false)} users={users} selectedTask={selectedTaskForUpdate} />
+      <UpdateTasksModal
+        open={updateModalOpen}
+        onClose={() => setUpdateModalOpen(false)}
+        users={users}
+        selectedTask={selectedTaskForUpdate}
+        onSubmit={handleUpdate}
+      />
       <DeleteModal isOpen={openModal} onClose={() => setOpenModal(false)} onConfirm={handleDeleteConfirm} />
     </React.Fragment>
   )

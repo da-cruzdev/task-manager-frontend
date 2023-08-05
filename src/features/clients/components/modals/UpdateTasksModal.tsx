@@ -5,18 +5,18 @@ import Datepicker, { DateValueType } from "react-tailwindcss-datepicker"
 import { User } from "../../../auth/interfaces/signData.interfaces"
 import dayjs from "dayjs"
 import { useSelector } from "react-redux"
-import { AppDispatch, RootState, useAppDispatch } from "../../../../app/store"
+import { RootState } from "../../../../app/store"
 import { Tasks, UpdateTaskData } from "../../interfaces/tasks.interfaces"
 import { selectUser } from "../../redux/clientSelectors"
-import { updateTask } from "../../redux/taskSlice"
 
 type TaskModalProps = {
   open: boolean
   onClose: () => void
   users: User[]
+  onSubmit: (data: UpdateTaskData) => void
 }
 
-const UpdateTasksModal: React.FC<TaskModalProps & { selectedTask: Tasks | null }> = ({ open, onClose, users, selectedTask }) => {
+const UpdateTasksModal: React.FC<TaskModalProps & { selectedTask: Tasks | null }> = ({ open, onClose, users, selectedTask, onSubmit }) => {
   const [formattedDeadline, setFormattedDeadline] = useState<DateValueType>({
     startDate: selectedTask?.deadline ? dayjs(selectedTask.deadline).toDate() : new Date(),
     endDate: selectedTask?.deadline ? dayjs(selectedTask.deadline).toDate() : dayjs(new Date()).add(1, "month").toDate(),
@@ -51,34 +51,22 @@ const UpdateTasksModal: React.FC<TaskModalProps & { selectedTask: Tasks | null }
     }
   }, [currentUser?.id, selectedTask, setValue])
 
-  const dispatch: AppDispatch = useAppDispatch()
+  const handleUpdateSubmit = (data: UpdateTaskData) => {
+    const endDate = typeof formattedDeadline?.endDate === "string" ? new Date(formattedDeadline.endDate) : formattedDeadline?.endDate
+    const newDeadline = endDate
 
-  const endDate = typeof formattedDeadline?.endDate === "string" ? new Date(formattedDeadline.endDate) : formattedDeadline?.endDate
-
-  const newDeadline = endDate
-
-  const handleUpdateTask = (data: UpdateTaskData) => {
     if (selectedTask) {
       const assignedToAsNumber = Number(data.assignedTo)
       let oldAssignerTo
       if (selectedTask?.owner.id !== currentUser?.id) {
         oldAssignerTo = currentUser?.id
-        console.log("============", oldAssignerTo)
       }
-      if (data) {
-        const updateData = {
-          id: selectedTask.id,
-          data: { ...data, assignedTo: assignedToAsNumber || oldAssignerTo, deadline: newDeadline },
-        }
 
-        dispatch(updateTask(updateData))
-          .unwrap()
-          .then((data) => {
-            console.log(data)
-            onClose()
-          })
-          .catch((err) => console.log(err))
+      const updateData: UpdateTaskData | any = {
+        id: selectedTask?.id,
+        data: { ...data, assignedTo: assignedToAsNumber || oldAssignerTo, deadline: newDeadline },
       }
+      onSubmit(updateData)
     }
   }
 
@@ -199,7 +187,7 @@ const UpdateTasksModal: React.FC<TaskModalProps & { selectedTask: Tasks | null }
             </div>
 
             <div className="w-full">
-              <Button onClick={handleSubmit(handleUpdateTask)}>{loading ? <Spinner></Spinner> : "Créer"}</Button>
+              <Button onClick={handleSubmit(handleUpdateSubmit)}>{loading ? <Spinner></Spinner> : "Créer"}</Button>
             </div>
           </div>
         </Modal.Body>

@@ -5,9 +5,10 @@ import { Tasks } from "../../interfaces/tasks.interfaces"
 import { FiEdit } from "react-icons/fi"
 
 import { selectTasks, selectUser } from "../../redux/clientSelectors"
-import { AppDispatch, useAppDispatch } from "../../../../app/store"
 import UpdateTasksModal from "../modals/UpdateTasksModal"
 import { User } from "../../../auth/interfaces/signData.interfaces"
+import { updateTask } from "../../redux/taskSlice"
+import { AppDispatch, useAppDispatch } from "../../../../app/store"
 
 type TaskCardProps = {
   users: User[]
@@ -21,8 +22,6 @@ const AssignedTasks: React.FC<TaskCardProps> = ({ users }) => {
   const tasks = useSelector(selectTasks)
   const currentUser = useSelector(selectUser)
 
-  const dispatch: AppDispatch = useAppDispatch()
-
   useEffect(() => {
     if (tasks && currentUser) {
       const userAssignedTasks = tasks.filter((task) => task.assignedToId === currentUser.id)
@@ -30,6 +29,24 @@ const AssignedTasks: React.FC<TaskCardProps> = ({ users }) => {
       setAssignedTasks(userAssignedTasks)
     }
   }, [currentUser, tasks])
+
+  const dispatch: AppDispatch = useAppDispatch()
+
+  const handleUpdate = (data: any) => {
+    dispatch(updateTask(data))
+      .unwrap()
+      .then((newTask: Tasks) => {
+        setAssignedTasks((oldTasks) => {
+          const filteredTasks = oldTasks.filter((task) => task.id !== newTask.id)
+          return [newTask, ...filteredTasks]
+        })
+
+        setUpdateModalOpen(false)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
 
   return (
     <React.Fragment>
@@ -71,7 +88,13 @@ const AssignedTasks: React.FC<TaskCardProps> = ({ users }) => {
             ))}
         </Table.Body>
       </Table>
-      <UpdateTasksModal open={updateModalOpen} onClose={() => setUpdateModalOpen(false)} users={users} selectedTask={selectedTaskForUpdate} />
+      <UpdateTasksModal
+        open={updateModalOpen}
+        onClose={() => setUpdateModalOpen(false)}
+        users={users}
+        selectedTask={selectedTaskForUpdate}
+        onSubmit={handleUpdate}
+      />
     </React.Fragment>
   )
 }

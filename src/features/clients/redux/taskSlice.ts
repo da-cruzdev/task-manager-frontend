@@ -10,6 +10,7 @@ interface TaskState {
   error: string | null
   task: Task | null
   tasks: Tasks[] | null
+  updatedTask: Tasks | null
 }
 
 const initialState: TaskState = {
@@ -17,6 +18,7 @@ const initialState: TaskState = {
   error: null,
   task: null,
   tasks: null,
+  updatedTask: null,
 }
 
 export const createTask = createAsyncThunk<Task, CreateTaskData, { rejectValue: string }>(
@@ -35,7 +37,7 @@ export const createTask = createAsyncThunk<Task, CreateTaskData, { rejectValue: 
   },
 )
 
-export const updateTask = createAsyncThunk<Task, { id: number; data: UpdateTaskData }, { rejectValue: string }>(
+export const updateTask = createAsyncThunk<Tasks, { id: number; data: UpdateTaskData }, { rejectValue: string }>(
   "task/updateTask",
   async ({ id, data }, { rejectWithValue }) => {
     try {
@@ -108,9 +110,9 @@ const taskSlice = createSlice({
         state.loading = true
         state.error = null
       })
-      .addCase(updateTask.fulfilled, (state, action: PayloadAction<Task>) => {
+      .addCase(updateTask.fulfilled, (state, action: PayloadAction<Tasks>) => {
         state.loading = false
-        state.task = action.payload
+        state.updatedTask = action.payload
       })
       .addCase(updateTask.rejected, (state, action: PayloadAction<string | undefined>) => {
         state.loading = false
