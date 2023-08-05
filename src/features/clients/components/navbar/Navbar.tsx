@@ -9,21 +9,27 @@ import { User } from "../../../auth/interfaces/signData.interfaces"
 import { logoutUser } from "../../redux/userSlice"
 import { useNavigate } from "react-router-dom"
 import client from "../../../../app/graphql"
+import { UpdateUserInfoModal } from "../modals/UpdateUserInfoModal"
 
 type UserProps = {
   userEmail?: string
 }
 
 export const UserDropdown: React.FC<UserProps & { handleLogout: () => void }> = ({ userEmail, handleLogout }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
   return (
-    <Dropdown inline label={<Avatar alt="User settings" rounded status="online" statusPosition="top-right" />}>
-      <Dropdown.Header>
-        <span className="block truncate text-sm font-medium">{userEmail}</span>
-      </Dropdown.Header>
-      <Dropdown.Item>Modifier le profil</Dropdown.Item>
-      <Dropdown.Divider />
-      <Dropdown.Item onClick={handleLogout}>Se déconnecter</Dropdown.Item>
-    </Dropdown>
+    <>
+      <Dropdown inline label={<Avatar alt="User settings" rounded status="online" statusPosition="top-right" />}>
+        <Dropdown.Header>
+          <span className="block truncate text-sm font-medium">{userEmail}</span>
+        </Dropdown.Header>
+        <Dropdown.Item onClick={() => setIsModalOpen(true)}>Modifier le profil</Dropdown.Item>
+        <Dropdown.Divider />
+        <Dropdown.Item onClick={handleLogout}>Se déconnecter</Dropdown.Item>
+      </Dropdown>
+      <UpdateUserInfoModal open={isModalOpen} onClose={() => setIsModalOpen(false)} />
+    </>
   )
 }
 

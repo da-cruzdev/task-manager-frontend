@@ -12,7 +12,7 @@ import { User } from "../../../auth/interfaces/signData.interfaces"
 import { PlusIcon, ClipboardDocumentIcon } from "@heroicons/react/24/outline"
 import { SpeedDial, SpeedDialHandler, IconButton, SpeedDialContent, SpeedDialAction, Typography } from "@material-tailwind/react"
 import UpdateTasksModal from "../modals/UpdateTasksModal"
-import { HiCheck, HiClock, HiUser, HiClipboard } from "react-icons/hi"
+import { HiBadgeCheck, HiClock, HiUser, HiClipboard } from "react-icons/hi"
 
 type TaskCardProps = {
   users: User[]
@@ -27,7 +27,7 @@ export const formatStatusWithIcon = (status: string): React.ReactNode => {
   const statusMappings: { [key: string]: { label: string; icon: React.ReactNode } } = {
     PENDING: { label: "En attente", icon: <Badge icon={HiClock} className=" mr-2" color="red" size="sm" /> },
     IN_PROGRESS: { label: "En cours", icon: <Badge icon={HiClock} className=" mr-2" size="sm" /> },
-    DONE: { label: "Terminée", icon: <Badge icon={HiCheck} className=" mr-2" size="sm" /> },
+    DONE: { label: "Terminée", icon: <Badge icon={HiBadgeCheck} className=" mr-2" size="sm" /> },
   }
 
   const statusMapping = statusMappings[status]

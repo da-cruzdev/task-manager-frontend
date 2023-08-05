@@ -187,7 +187,7 @@ const UpdateTasksModal: React.FC<TaskModalProps & { selectedTask: Tasks | null }
             </div>
 
             <div className="w-full">
-              <Button onClick={handleSubmit(handleUpdateSubmit)}>{loading ? <Spinner></Spinner> : "Créer"}</Button>
+              <Button onClick={handleSubmit(handleUpdateSubmit)}>{loading ? <Spinner></Spinner> : "Modifier"}</Button>
             </div>
           </div>
         </Modal.Body>

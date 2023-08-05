@@ -80,7 +80,7 @@ const CreateTaskModal: React.FC<TaskModalProps> = ({ open, onClose, users, onSub
   }
 
   return (
-    <div>
+    <>
       <Modal show={open} size="lg" popup onClose={onClose}>
         <Modal.Header />
         <Modal.Body>
@@ -169,7 +169,7 @@ const CreateTaskModal: React.FC<TaskModalProps> = ({ open, onClose, users, onSub
           </div>
         </Modal.Body>
       </Modal>
-    </div>
+    </>
   )
 }
 

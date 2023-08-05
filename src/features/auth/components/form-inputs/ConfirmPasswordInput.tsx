@@ -1,28 +1,29 @@
 import { Label, TextInput } from "flowbite-react"
+import React from "react"
 
-export const PasswordInput = ({ register, errors }: { register: any; errors: any }) => {
+export const ConfirmPasswordInput = ({ register, errors }: { register: any; errors: any }) => {
   return (
-    <div>
+    <>
       <div className="mb-2 block">
-        <Label htmlFor="password" value="Votre mot de passe" />
+        <Label htmlFor="confirmPassword" value="Confirmez votre mot de passe" />
       </div>
       <TextInput
-        {...register("password", {
+        {...register("confirmPassword", {
           required: "Ce champ est requis",
           pattern: { value: /^[A-Za-z0-9]{8,30}$/, message: "Le mot de passe doit avoir au moins 8 caractères" },
         })}
-        id="password"
+        id="confirmPassword"
         type="password"
-        color={errors.password && "failure"}
+        color={errors.confirmPassword && "failure"}
         helperText={
-          errors.password && (
+          errors.confirmPassword && (
             <>
               <span className="font-medium">Oops!</span>
-              {errors.password?.message}
+              {errors.confirmPassword?.message}
             </>
           )
         }
       />
-    </div>
+    </>
   )
 }
