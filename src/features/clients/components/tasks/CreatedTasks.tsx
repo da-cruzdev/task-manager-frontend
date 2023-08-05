@@ -1,4 +1,4 @@
-import { Button, Table } from "flowbite-react"
+import { Badge, Button, Table } from "flowbite-react"
 import React, { useEffect, useState } from "react"
 import { selectTasks, selectUser } from "../../redux/clientSelectors"
 import { useSelector } from "react-redux"
@@ -12,6 +12,7 @@ import { User } from "../../../auth/interfaces/signData.interfaces"
 import { PlusIcon, ClipboardDocumentIcon } from "@heroicons/react/24/outline"
 import { SpeedDial, SpeedDialHandler, IconButton, SpeedDialContent, SpeedDialAction, Typography } from "@material-tailwind/react"
 import UpdateTasksModal from "../modals/UpdateTasksModal"
+import { HiCheck, HiClock, HiUser, HiClipboard } from "react-icons/hi"
 
 type TaskCardProps = {
   users: User[]
@@ -20,6 +21,43 @@ type TaskCardProps = {
 
 type CreateTaskCardProps = {
   users: User[]
+}
+
+export const formatStatusWithIcon = (status: string): React.ReactNode => {
+  const statusMappings: { [key: string]: { label: string; icon: React.ReactNode } } = {
+    PENDING: { label: "En attente", icon: <Badge icon={HiClock} className=" mr-2" color="red" size="sm" /> },
+    IN_PROGRESS: { label: "En cours", icon: <Badge icon={HiClock} className=" mr-2" size="sm" /> },
+    DONE: { label: "Terminée", icon: <Badge icon={HiCheck} className=" mr-2" size="sm" /> },
+  }
+
+  const statusMapping = statusMappings[status]
+
+  if (statusMapping) {
+    return (
+      <span className="flex items-center">
+        {statusMapping.icon}
+        {statusMapping.label}
+      </span>
+    )
+  }
+
+  return status
+}
+
+const formatDate = (date: string | number | Date) => {
+  const options: Intl.DateTimeFormatOptions = { year: "numeric", month: "2-digit", day: "2-digit" }
+  return new Date(date).toLocaleDateString("fr-FR", options)
+}
+
+export const formatDateWithIcon = (date: Date): React.ReactNode => {
+  const formattedDate = formatDate(date)
+
+  return (
+    <span className="flex items-center">
+      <Badge icon={HiClock} className=" mr-1" color="gray" />
+      {formattedDate}
+    </span>
+  )
 }
 
 const CreatedTasks: React.FC<CreateTaskCardProps> = ({ users }) => {
@@ -113,10 +151,19 @@ const CreatedTasks: React.FC<CreateTaskCardProps> = ({ users }) => {
             createdTasks.map((task) => (
               <Table.Row key={task.id} className="bg-white dark:border-gray-700 dark:bg-gray-800">
                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">{task.title}</Table.Cell>
-                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">{task.description}</Table.Cell>
-                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">{task.status}</Table.Cell>
-                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">{task.deadline?.toLocaleString()}</Table.Cell>
-                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">{task.assignUser.username}</Table.Cell>
+                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                  <div className="flex">
+                    <Badge icon={HiClipboard} size="sm" color="gray" />
+                    {task.description}
+                  </div>
+                </Table.Cell>
+                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">{formatStatusWithIcon(task.status)}</Table.Cell>
+                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">{formatDateWithIcon(task.deadline!!)}</Table.Cell>
+                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                  <div className="flex">
+                    <Badge icon={HiUser} className="mr-1" color="gray" /> {task.assignUser.username}
+                  </div>
+                </Table.Cell>
                 <Table.Cell className="flex mx-auto">
                   <Button
                     color="gray"

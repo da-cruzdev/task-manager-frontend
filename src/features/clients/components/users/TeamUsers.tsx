@@ -1,5 +1,6 @@
-import { Table } from "flowbite-react"
+import { Table, Badge } from "flowbite-react"
 import React, { useEffect } from "react"
+import { HiQuestionMarkCircle, HiMail, HiUser, HiClipboardCheck, HiClipboardList } from "react-icons/hi"
 import { useSelector } from "react-redux"
 import { selectTasks, selectUsers } from "../../redux/clientSelectors"
 
@@ -34,11 +35,36 @@ const TeamUsers = () => {
           {users &&
             users.map((user) => (
               <Table.Row key={user.id} className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">{user.username}</Table.Cell>
-                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">{user.username}</Table.Cell>
-                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">{user.role}</Table.Cell>
-                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white ms-9">{countCreatedTasks(user.id)}</Table.Cell>
-                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white ms-9">{countAssignedTasks(user.id)}</Table.Cell>
+                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                  <div className="flex">
+                    <Badge icon={HiUser} className="mr-1" size="sm" color="gray" />
+                    {user.username}
+                  </div>
+                </Table.Cell>
+                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                  <div className="flex">
+                    <Badge icon={HiMail} className="mr-1" size="sm" color="gray" />
+                    {user.email}
+                  </div>
+                </Table.Cell>
+                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                  <div className="flex">
+                    <Badge icon={HiQuestionMarkCircle} className="mr-1" size="sm" color="gray" />
+                    {user.role}
+                  </div>
+                </Table.Cell>
+                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                  <div className="flex">
+                    <Badge icon={HiClipboardCheck} className="mr-1" size="sm" color="gray" />
+                    {countCreatedTasks(user.id)}
+                  </div>
+                </Table.Cell>
+                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                  <div className="flex">
+                    <Badge icon={HiClipboardList} className="mr-1" size="sm" color="gray" />
+                    {countAssignedTasks(user.id)}
+                  </div>
+                </Table.Cell>
               </Table.Row>
             ))}
         </Table.Body>
