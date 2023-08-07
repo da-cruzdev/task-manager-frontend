@@ -54,6 +54,7 @@ const CreateTaskModal: React.FC<TaskModalProps> = ({ open, onClose, users, onSub
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<TaskFormData>()
 
@@ -76,6 +77,7 @@ const CreateTaskModal: React.FC<TaskModalProps> = ({ open, onClose, users, onSub
 
     if (formDataWithDatePicker) {
       onSubmit(formDataWithDatePicker)
+      reset()
     }
   }
 

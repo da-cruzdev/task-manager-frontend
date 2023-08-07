@@ -1,7 +1,8 @@
 import client from "../../../app/graphql"
 import { User } from "../../auth/interfaces/signData.interfaces"
 import { CreateTaskData, Task, Tasks, UpdateTaskData } from "../interfaces/tasks.interfaces"
-import { CREATE_TASK, DELETE_TASK, GET_ALL_USERS, GET_TASKS, GET_USER_INFO, UPDATE_TASK } from "./queries"
+import { UpdateUserData, UpdateUserResponse } from "../interfaces/users.interfaces"
+import { CREATE_TASK, DELETE_TASK, GET_ALL_USERS, GET_TASKS, GET_USER_INFO, UPDATE_TASK, UPDATE_USER_INFO } from "./queries"
 
 class ClientService {
   async getUserInfo(): Promise<User> {
@@ -20,6 +21,17 @@ class ClientService {
       const response = await client.query({ query: GET_ALL_USERS })
 
       return response.data.users
+    } catch (error) {
+      throw error
+    }
+  }
+
+  async updateUser(data: UpdateUserData): Promise<UpdateUserResponse> {
+    try {
+      const { username, email, oldPassword, newPassword } = data
+      const response = await client.mutate({ mutation: UPDATE_USER_INFO, variables: { username, email, oldPassword, newPassword } })
+
+      return response.data.updateUser
     } catch (error) {
       throw error
     }

@@ -4,6 +4,7 @@ import authServices from "../../auth/services/auth.services"
 import toastr from "toastr"
 import "toastr/build/toastr.css"
 import clientServices from "../services/client.services"
+import { UpdateUserData, UpdateUserResponse } from "../interfaces/users.interfaces"
 
 interface UserState {
   data: User | null
@@ -11,6 +12,7 @@ interface UserState {
   error: string | null
   loggedOut: LogoutResponse | null
   users: User[] | null
+  updatedUser: UpdateUserResponse | null
 }
 
 const initialState: UserState = {
@@ -19,6 +21,7 @@ const initialState: UserState = {
   error: null,
   loggedOut: null,
   users: null,
+  updatedUser: null,
 }
 
 export const getAllUsers = createAsyncThunk<User[], void, { rejectValue: string }>(
@@ -32,6 +35,25 @@ export const getAllUsers = createAsyncThunk<User[], void, { rejectValue: string 
     } catch (error: any) {
       toastr.error(error)
       return rejectWithValue(error.message || "Erreur lors de la récupération des utilisateurs")
+    }
+  },
+)
+
+export const UpdateUser = createAsyncThunk<UpdateUserResponse, UpdateUserData, { rejectValue: string }>(
+  "user/updateUser",
+  async (data: UpdateUserData, { rejectWithValue }) => {
+    try {
+      const response = await clientServices.updateUser(data)
+      if (response) {
+        const token = response.accessToken
+        // const refreshToken = response.refreshToken
+        authServices.setToken(token)
+      }
+      return response
+    } catch (error: any) {
+      toastr.error(error)
+
+      return rejectWithValue(error.message || "Erreur lors de la mise à jour des infos de l'utilisateur")
     }
   },
 )
@@ -82,6 +104,18 @@ const userSlice = createSlice({
       .addCase(getAllUsers.rejected, (state, action: PayloadAction<string | any>) => {
         state.loading = false
         state.error = action.payload ?? null
+      })
+      .addCase(UpdateUser.pending, (state) => {
+        state.loading = true
+        state.error = null
+      })
+      .addCase(UpdateUser.fulfilled, (state, action: PayloadAction<UpdateUserResponse>) => {
+        state.loading = false
+        state.updatedUser = action.payload
+      })
+      .addCase(UpdateUser.rejected, (state, action: PayloadAction<string | any>) => {
+        state.loading = false
+        state.error = action.payload
       })
   },
 })

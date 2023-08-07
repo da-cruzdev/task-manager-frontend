@@ -6,16 +6,18 @@ import React, { useEffect, useState } from "react"
 import { getUser } from "../../redux/clientSlice"
 import { AppDispatch, useAppDispatch } from "../../../../app/store"
 import { User } from "../../../auth/interfaces/signData.interfaces"
-import { logoutUser } from "../../redux/userSlice"
+import { UpdateUser, logoutUser } from "../../redux/userSlice"
 import { useNavigate } from "react-router-dom"
 import client from "../../../../app/graphql"
 import { UpdateUserInfoModal } from "../modals/UpdateUserInfoModal"
+import { UpdateUserData } from "../../interfaces/users.interfaces"
 
 type UserProps = {
   userEmail?: string
+  handleUpdateSubmit: (data: UpdateUserData) => void
 }
 
-export const UserDropdown: React.FC<UserProps & { handleLogout: () => void }> = ({ userEmail, handleLogout }) => {
+export const UserDropdown: React.FC<UserProps & { handleLogout: () => void }> = ({ userEmail, handleLogout, handleUpdateSubmit }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   return (
@@ -28,7 +30,7 @@ export const UserDropdown: React.FC<UserProps & { handleLogout: () => void }> = 
         <Dropdown.Divider />
         <Dropdown.Item onClick={handleLogout}>Se déconnecter</Dropdown.Item>
       </Dropdown>
-      <UpdateUserInfoModal open={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <UpdateUserInfoModal open={isModalOpen} onClose={() => setIsModalOpen(false)} handleUpdateSubmit={handleUpdateSubmit} />
     </>
   )
 }
@@ -71,6 +73,19 @@ export default function NavbarComponent() {
     // }
   }, [dispatch])
 
+  const onUpdateUser = (data: UpdateUserData) => {
+    dispatch(UpdateUser(data))
+      .unwrap()
+      .then((data) => {
+        console.log(data)
+
+        setUserData(data.updatedUser)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
   const onLogout = async () => {
     if (userData?.id !== undefined)
       dispatch(logoutUser(userData?.id))
@@ -97,7 +112,7 @@ export default function NavbarComponent() {
 
       <div className="flex">
         <span className="block truncate text-sm font-medium me-3 mt-2">{userData?.username}</span>
-        <UserDropdown userEmail={userData?.email} handleLogout={onLogout} />
+        <UserDropdown userEmail={userData?.email} handleLogout={onLogout} handleUpdateSubmit={onUpdateUser} />
       </div>
     </Navbar>
   )

@@ -21,6 +21,21 @@ export const GET_USER_INFO = gql`
   }
 `
 
+export const UPDATE_USER_INFO = gql`
+  mutation UpdateUserInfo($username: String!, $email: String!, $oldPassword: String!, $newPassword: String!) {
+    updateUser(data: { username: $username, email: $email, oldPassword: $oldPassword, newPassword: $newPassword }) {
+      updatedUser {
+        id
+        username
+        email
+        role
+      }
+      accessToken
+      refreshToken
+    }
+  }
+`
+
 export const GET_ALL_USERS = gql`
   query GetAllUsers {
     users {

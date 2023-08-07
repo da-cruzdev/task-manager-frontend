@@ -84,7 +84,6 @@ const CreatedTasks: React.FC<CreateTaskCardProps> = ({ users }) => {
     dispatch(createTask(data))
       .unwrap()
       .then((newTask: Tasks) => {
-        console.log(data)
         setCreatedTasks((oldTasks) => {
           const filteredTasks = oldTasks.filter((task) => task.id !== newTask.id)
           return [newTask, ...filteredTasks]
