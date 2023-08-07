@@ -23,8 +23,8 @@ export interface Task {
 }
 
 export interface TasksFilterOptions {
-  status?: string
   query?: string
+  status?: string
 }
 
 export interface Tasks {

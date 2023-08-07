@@ -13,10 +13,15 @@ import { UpdateUserInfoModal } from "../modals/UpdateUserInfoModal"
 import { UpdateUserData } from "../../interfaces/users.interfaces"
 import { io } from "socket.io-client"
 import { useForm } from "react-hook-form"
+import { TasksFilterOptions } from "../../interfaces/tasks.interfaces"
 
 type UserProps = {
   userEmail?: string
   handleUpdateSubmit: (data: UpdateUserData) => void
+}
+
+type NavbarProps = {
+  onFilterChange: (filterOptions: TasksFilterOptions) => void
 }
 
 export const UserDropdown: React.FC<UserProps & { handleLogout: () => void }> = ({ userEmail, handleLogout, handleUpdateSubmit }) => {
@@ -37,8 +42,13 @@ export const UserDropdown: React.FC<UserProps & { handleLogout: () => void }> = 
   )
 }
 
-export default function NavbarComponent() {
+const NavbarComponent: React.FC<NavbarProps> = ({ onFilterChange }) => {
   const [userData, setUserData] = useState<User | null>(null)
+  const [filterOptions, setFilterOptions] = useState<TasksFilterOptions>({
+    query: "",
+    status: "",
+  })
+
   const dispatch: AppDispatch = useAppDispatch()
 
   const navigate = useNavigate()
@@ -115,12 +125,29 @@ export default function NavbarComponent() {
             type="text"
             rightIcon={HiSearch}
             placeholder="Recherche..."
-            onChange={(e) => console.log(e.target.value)}
+            onChange={(e) => {
+              const newFilterOptions = { ...filterOptions, query: e.target.value }
+              console.log("query===============>", newFilterOptions)
+
+              setFilterOptions(newFilterOptions)
+              onFilterChange(newFilterOptions)
+            }}
           />
         </div>
         <div className="ms-5 w-50">
-          <Select {...register("status")} id="status" onSelect={(e) => console.log(e.target.dispatchEvent)}>
-            <option selected>Statut</option>
+          <Select
+            {...register("status")}
+            id="status"
+            placeholder="Statut"
+            onChange={(e) => {
+              const newFilterOptions = { ...filterOptions, status: e.currentTarget.value }
+              console.log("status===============>", newFilterOptions)
+
+              setFilterOptions(newFilterOptions)
+              onFilterChange(newFilterOptions)
+            }}
+          >
+            <option value="">Filtre </option>
             <option value="PENDING">En attente</option>
             <option value="IN_PROGRESS">En cours</option>
             <option value="DONE">Terminé</option>
@@ -137,3 +164,5 @@ export default function NavbarComponent() {
     </Navbar>
   )
 }
+
+export default NavbarComponent

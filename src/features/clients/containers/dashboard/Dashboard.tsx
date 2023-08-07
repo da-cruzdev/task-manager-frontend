@@ -10,34 +10,42 @@ import { AppDispatch, useAppDispatch } from "../../../../app/store"
 import { getTasks } from "../../redux/taskSlice"
 import { getAllUsers } from "../../redux/userSlice"
 import { User } from "../../../auth/interfaces/signData.interfaces"
+import { TasksFilterOptions } from "../../interfaces/tasks.interfaces"
 
 const Dashboard = () => {
   const [users, setUsers] = useState<User[]>([])
+  const [filterOptions, setFilterOptions] = useState<TasksFilterOptions>({
+    query: "",
+    status: "",
+  })
   const dispatch: AppDispatch = useAppDispatch()
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const fetchTasks = () => {
+    dispatch(getTasks({ ...filterOptions }))
+      .unwrap()
+      .then(() => {})
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const fetchUsers = async () => {
+    dispatch(getAllUsers())
+      .unwrap()
+      .then((data) => {
+        setUsers(data)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
   useEffect(() => {
-    const fetchTasks = () => {
-      dispatch(getTasks({}))
-        .unwrap()
-        .then(() => {})
-        .catch((err) => {
-          console.log(err)
-        })
-    }
-    const fetchUsers = async () => {
-      dispatch(getAllUsers())
-        .unwrap()
-        .then((data) => {
-          setUsers(data)
-        })
-        .catch((err) => {
-          console.log(err)
-        })
-    }
     fetchUsers()
 
     fetchTasks()
-  }, [dispatch])
+  }, [dispatch, fetchTasks, fetchUsers, filterOptions])
 
   return (
     <div className="flex">
@@ -46,7 +54,7 @@ const Dashboard = () => {
       </div>
       <div className="w-4/5 mt-4 px-5 mx-auto">
         <div>
-          <Navbar />
+          <Navbar onFilterChange={setFilterOptions} />
         </div>
         <div className="mt-9">
           <Routes>
