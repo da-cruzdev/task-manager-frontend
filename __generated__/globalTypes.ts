@@ -16,6 +16,11 @@ export enum TaskStatus {
   PENDING = "PENDING",
 }
 
+export interface TasksFilterOptions {
+  status?: string | null;
+  query?: string | null;
+}
+
 //==============================================================
 // END Enums and Input Objects
 //==============================================================

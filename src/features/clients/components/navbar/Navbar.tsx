@@ -1,7 +1,7 @@
 "use client"
 
-import { Navbar, TextInput, Avatar, Dropdown } from "flowbite-react"
-import { HiSearch } from "react-icons/hi"
+import { Navbar, TextInput, Avatar, Dropdown, Badge, Select } from "flowbite-react"
+import { HiSearch, HiBell } from "react-icons/hi"
 import React, { useEffect, useState } from "react"
 import { getUser } from "../../redux/clientSlice"
 import { AppDispatch, useAppDispatch } from "../../../../app/store"
@@ -11,6 +11,8 @@ import { useNavigate } from "react-router-dom"
 import client from "../../../../app/graphql"
 import { UpdateUserInfoModal } from "../modals/UpdateUserInfoModal"
 import { UpdateUserData } from "../../interfaces/users.interfaces"
+import { io } from "socket.io-client"
+import { useForm } from "react-hook-form"
 
 type UserProps = {
   userEmail?: string
@@ -54,31 +56,29 @@ export default function NavbarComponent() {
     }
     user()
 
-    // const socket = io("http://localhost:4000")
+    const socket = io("http://localhost:4000")
 
-    // socket.on("connect", () => {
-    //   console.log("connected===================>")
-    // })
+    socket.on("connect", () => {
+      console.log("connected===================>")
+    })
 
-    // socket.emit("message", " Wilfried", (data: string) => {
-    //   console.log(data)
-    // })
+    socket.emit("message", " Wilfried", (data: string) => {
+      console.log(data)
+    })
 
-    // socket.on("notification", (data: any) => {
-    //   console.log("notification:", data)
-    // })
+    socket.on("notification", (data: any) => {
+      console.log("notification:", data)
+    })
 
-    // return () => {
-    //   socket.close()
-    // }
+    return () => {
+      socket.close()
+    }
   }, [dispatch])
 
   const onUpdateUser = (data: UpdateUserData) => {
     dispatch(UpdateUser(data))
       .unwrap()
       .then((data) => {
-        console.log(data)
-
         setUserData(data.updatedUser)
       })
       .catch((err) => {
@@ -101,17 +101,37 @@ export default function NavbarComponent() {
         })
   }
 
+  const { register } = useForm()
+
   return (
     <Navbar fluid rounded>
       <div className="flex">
         <p className="text-md font-bold tracking-tight text-gray-900 dark:text-white mt-1">Tableau de bord</p>
-        <div className="ms-11 w-64">
-          <TextInput id="base" sizing="md" type="text" rightIcon={HiSearch} />
+        <div className="ms-5 w-64">
+          <TextInput
+            {...register("query")}
+            id="base"
+            sizing="md"
+            type="text"
+            rightIcon={HiSearch}
+            placeholder="Recherche..."
+            onChange={(e) => console.log(e.target.value)}
+          />
+        </div>
+        <div className="ms-5 w-50">
+          <Select {...register("status")} id="status" onSelect={(e) => console.log(e.target.dispatchEvent)}>
+            <option selected>Statut</option>
+            <option value="PENDING">En attente</option>
+            <option value="IN_PROGRESS">En cours</option>
+            <option value="DONE">Terminé</option>
+          </Select>
         </div>
       </div>
 
-      <div className="flex">
+      <div className="flex justify-between">
         <span className="block truncate text-sm font-medium me-3 mt-2">{userData?.username}</span>
+        <Badge icon={HiBell} size="2xl" className="me-2 mt-1" color="white" spellCheck={false} />
+
         <UserDropdown userEmail={userData?.email} handleLogout={onLogout} handleUpdateSubmit={onUpdateUser} />
       </div>
     </Navbar>

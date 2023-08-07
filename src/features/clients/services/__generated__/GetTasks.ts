@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { TaskStatus } from "./../../../../../__generated__/globalTypes";
+import { TasksFilterOptions, TaskStatus } from "./../../../../../__generated__/globalTypes";
 
 // ====================================================
 // GraphQL query operation: GetTasks
@@ -81,4 +81,8 @@ export interface GetTasks_tasks {
 
 export interface GetTasks {
   tasks: GetTasks_tasks[];
+}
+
+export interface GetTasksVariables {
+  filterOptions?: TasksFilterOptions | null;
 }

@@ -1,5 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit"
-import { CreateTaskData, Task, Tasks, UpdateTaskData } from "../interfaces/tasks.interfaces"
+import { CreateTaskData, Task, Tasks, TasksFilterOptions, UpdateTaskData } from "../interfaces/tasks.interfaces"
 import clientServices from "../services/client.services"
 import { ApolloError } from "@apollo/client"
 import toastr from "toastr"
@@ -53,14 +53,17 @@ export const updateTask = createAsyncThunk<Tasks, { id: number; data: UpdateTask
   },
 )
 
-export const getTasks = createAsyncThunk<Tasks[], void, { rejectValue: string }>("task/getTasks", async (_, { rejectWithValue }) => {
-  try {
-    const response = await clientServices.getTasks()
-    return response
-  } catch (error: any) {
-    return rejectWithValue(error.message || "Erreur lors de la récupération des tâches")
-  }
-})
+export const getTasks = createAsyncThunk<Tasks[], TasksFilterOptions, { rejectValue: string }>(
+  "task/getTasks",
+  async (filterOptions, { rejectWithValue }) => {
+    try {
+      const response = await clientServices.getTasks(filterOptions)
+      return response
+    } catch (error: any) {
+      return rejectWithValue(error.message || "Erreur lors de la récupération des tâches")
+    }
+  },
+)
 
 export const deleteTask = createAsyncThunk<Task, number, { rejectValue: string }>("task/deleteTask", async (id: number, { rejectWithValue }) => {
   try {

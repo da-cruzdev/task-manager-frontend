@@ -22,6 +22,11 @@ export interface Task {
   deadline: Date | null
 }
 
+export interface TasksFilterOptions {
+  status?: string
+  query?: string
+}
+
 export interface Tasks {
   id: number
   title: string

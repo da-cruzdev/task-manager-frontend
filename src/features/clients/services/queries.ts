@@ -103,8 +103,8 @@ export const CREATE_TASK = gql`
 `
 
 export const GET_TASKS = gql`
-  query GetTasks {
-    tasks {
+  query GetTasks($filterOptions: TasksFilterOptions) {
+    tasks(filterOptions: $filterOptions) {
       id
       title
       description

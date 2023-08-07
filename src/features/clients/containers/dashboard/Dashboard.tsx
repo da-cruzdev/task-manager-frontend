@@ -17,7 +17,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchTasks = () => {
-      dispatch(getTasks())
+      dispatch(getTasks({}))
         .unwrap()
         .then(() => {})
         .catch((err) => {
