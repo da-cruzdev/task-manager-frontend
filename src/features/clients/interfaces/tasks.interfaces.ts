@@ -27,6 +27,11 @@ export interface TasksFilterOptions {
   status?: string
 }
 
+export interface PaginationOptions {
+  skip?: number
+  take?: number
+}
+
 export interface Tasks {
   id: number
   title: string

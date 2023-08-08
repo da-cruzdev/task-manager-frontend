@@ -13,6 +13,7 @@ import { PlusIcon, ClipboardDocumentIcon } from "@heroicons/react/24/outline"
 import { SpeedDial, SpeedDialHandler, IconButton, SpeedDialContent, SpeedDialAction, Typography } from "@material-tailwind/react"
 import UpdateTasksModal from "../modals/UpdateTasksModal"
 import { HiBadgeCheck, HiClock, HiUser, HiClipboard } from "react-icons/hi"
+import TableDataNavigation from "../pagination/Pagination"
 
 type TaskCardProps = {
   users: User[]
@@ -78,6 +79,8 @@ const CreatedTasks: React.FC<CreateTaskCardProps> = ({ users, filterOptions }) =
       dispatch(getCreatedTasks({ ...filterOptions }))
         .unwrap()
         .then((tasks) => {
+          console.log(tasks)
+
           setCreatedTasks(tasks)
         })
         .catch((err) => {
@@ -198,6 +201,9 @@ const CreatedTasks: React.FC<CreateTaskCardProps> = ({ users, filterOptions }) =
         onSubmit={handleUpdate}
       />
       <DeleteModal isOpen={openModal} onClose={() => setOpenModal(false)} onConfirm={handleDeleteConfirm} />
+      <div className="fixed-bottom mt-11 text-end">
+        <TableDataNavigation />
+      </div>
     </React.Fragment>
   )
 }
