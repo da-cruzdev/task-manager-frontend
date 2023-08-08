@@ -1,10 +1,10 @@
 import React from "react"
 import { CreatedTaskCard } from "../cards/createdTask-card"
 import { UserTeamCard } from "../cards/UserTeamCard"
-import { TasksProgression } from "../cards/TasksProgression"
 import { AssignedTaskCard } from "../cards/assignedTasks-card"
 import { useSelector } from "react-redux"
 import { selectUsers } from "../../redux/clientSelectors"
+import TasksProgression from "../cards/TasksProgression"
 
 const HomeComponent = () => {
   const users = useSelector(selectUsers)
