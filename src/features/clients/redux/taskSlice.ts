@@ -10,6 +10,8 @@ interface TaskState {
   error: string | null
   task: Tasks | null
   tasks: Tasks[] | null
+  createdTasks: Tasks[] | null
+  assignedTasks: Tasks[] | null
   updatedTask: Tasks | null
 }
 
@@ -19,6 +21,8 @@ const initialState: TaskState = {
   task: null,
   tasks: null,
   updatedTask: null,
+  createdTasks: null,
+  assignedTasks: null,
 }
 
 export const createTask = createAsyncThunk<Tasks, CreateTaskData, { rejectValue: string }>(
@@ -58,6 +62,30 @@ export const getTasks = createAsyncThunk<Tasks[], TasksFilterOptions, { rejectVa
   async (filterOptions, { rejectWithValue }) => {
     try {
       const response = await clientServices.getTasks(filterOptions)
+      return response
+    } catch (error: any) {
+      return rejectWithValue(error.message || "Erreur lors de la récupération des tâches")
+    }
+  },
+)
+
+export const getCreatedTasks = createAsyncThunk<Tasks[], TasksFilterOptions, { rejectValue: string }>(
+  "task/getCreatedTasks",
+  async (filterOptions, { rejectWithValue }) => {
+    try {
+      const response = await clientServices.getCreatedTasks(filterOptions)
+      return response
+    } catch (error: any) {
+      return rejectWithValue(error.message || "Erreur lors de la récupération des tâches")
+    }
+  },
+)
+
+export const getAssignedTasks = createAsyncThunk<Tasks[], TasksFilterOptions, { rejectValue: string }>(
+  "task/getAssignedTasks",
+  async (filterOptions, { rejectWithValue }) => {
+    try {
+      const response = await clientServices.getAssignedTasks(filterOptions)
       return response
     } catch (error: any) {
       return rejectWithValue(error.message || "Erreur lors de la récupération des tâches")
@@ -106,6 +134,30 @@ const taskSlice = createSlice({
         state.tasks = action.payload
       })
       .addCase(getTasks.rejected, (state, action: PayloadAction<string | undefined>) => {
+        state.loading = false
+        state.error = action.payload ?? null
+      })
+      .addCase(getCreatedTasks.pending, (state) => {
+        state.loading = true
+        state.error = null
+      })
+      .addCase(getCreatedTasks.fulfilled, (state, action: PayloadAction<Tasks[]>) => {
+        state.loading = false
+        state.createdTasks = action.payload
+      })
+      .addCase(getCreatedTasks.rejected, (state, action: PayloadAction<string | undefined>) => {
+        state.loading = false
+        state.error = action.payload ?? null
+      })
+      .addCase(getAssignedTasks.pending, (state) => {
+        state.loading = true
+        state.error = null
+      })
+      .addCase(getAssignedTasks.fulfilled, (state, action: PayloadAction<Tasks[]>) => {
+        state.loading = false
+        state.assignedTasks = action.payload
+      })
+      .addCase(getAssignedTasks.rejected, (state, action: PayloadAction<string | undefined>) => {
         state.loading = false
         state.error = action.payload ?? null
       })

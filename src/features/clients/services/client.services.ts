@@ -2,7 +2,17 @@ import client from "../../../app/graphql"
 import { User } from "../../auth/interfaces/signData.interfaces"
 import { CreateTaskData, Task, Tasks, TasksFilterOptions, UpdateTaskData } from "../interfaces/tasks.interfaces"
 import { UpdateUserData, UpdateUserResponse } from "../interfaces/users.interfaces"
-import { CREATE_TASK, DELETE_TASK, GET_ALL_USERS, GET_TASKS, GET_USER_INFO, UPDATE_TASK, UPDATE_USER_INFO } from "./queries"
+import {
+  CREATE_TASK,
+  DELETE_TASK,
+  GET_ALL_USERS,
+  GET_ASSIGNED_TASKS,
+  GET_CREATED_TASKS,
+  GET_TASKS,
+  GET_USER_INFO,
+  UPDATE_TASK,
+  UPDATE_USER_INFO,
+} from "./queries"
 
 class ClientService {
   async getUserInfo(): Promise<User> {
@@ -52,6 +62,24 @@ class ClientService {
     try {
       const response = await client.query({ query: GET_TASKS, variables: { filterOptions } })
       return response.data.tasks
+    } catch (error) {
+      throw error
+    }
+  }
+
+  async getCreatedTasks(filterOptions?: TasksFilterOptions): Promise<Tasks[]> {
+    try {
+      const response = await client.query({ query: GET_CREATED_TASKS, variables: { filterOptions } })
+      return response.data.createdTasks
+    } catch (error) {
+      throw error
+    }
+  }
+
+  async getAssignedTasks(filterOptions?: TasksFilterOptions): Promise<Tasks[]> {
+    try {
+      const response = await client.query({ query: GET_ASSIGNED_TASKS, variables: { filterOptions } })
+      return response.data.assignedTasks
     } catch (error) {
       throw error
     }

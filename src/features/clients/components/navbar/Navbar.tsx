@@ -66,24 +66,20 @@ const NavbarComponent: React.FC<NavbarProps> = ({ onFilterChange }) => {
     }
     user()
 
-    const socket = io("http://localhost:4000")
+    const socket = io("http://[::1]:4000")
 
     socket.on("connect", () => {
       console.log("connected===================>")
     })
 
-    socket.emit("message", " Wilfried", (data: string) => {
-      console.log(data)
-    })
-
-    socket.on("notification", (data: any) => {
+    socket.on("notification", (data: string) => {
       console.log("notification:", data)
     })
 
     return () => {
       socket.close()
     }
-  }, [dispatch])
+  }, [dispatch, userData?.id])
 
   const onUpdateUser = (data: UpdateUserData) => {
     dispatch(UpdateUser(data))
@@ -127,7 +123,6 @@ const NavbarComponent: React.FC<NavbarProps> = ({ onFilterChange }) => {
             placeholder="Recherche..."
             onChange={(e) => {
               const newFilterOptions = { ...filterOptions, query: e.target.value }
-              console.log("query===============>", newFilterOptions)
 
               setFilterOptions(newFilterOptions)
               onFilterChange(newFilterOptions)
@@ -141,7 +136,6 @@ const NavbarComponent: React.FC<NavbarProps> = ({ onFilterChange }) => {
             placeholder="Statut"
             onChange={(e) => {
               const newFilterOptions = { ...filterOptions, status: e.currentTarget.value }
-              console.log("status===============>", newFilterOptions)
 
               setFilterOptions(newFilterOptions)
               onFilterChange(newFilterOptions)

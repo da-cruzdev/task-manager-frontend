@@ -15,7 +15,7 @@ export const CreatedTaskCard = () => {
 
   useEffect(() => {
     if (tasks && currentUser) {
-      const userCreatedTasks = tasks.filter((task) => task.owner.id === currentUser.id)
+      const userCreatedTasks = tasks.filter((task) => task.owner?.id === currentUser.id)
       setCreatedTasks(userCreatedTasks)
     }
   }, [currentUser, tasks])

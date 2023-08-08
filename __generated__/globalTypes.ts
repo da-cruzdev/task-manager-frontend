@@ -17,8 +17,8 @@ export enum TaskStatus {
 }
 
 export interface TasksFilterOptions {
-  status?: string | null;
   query?: string | null;
+  status?: string | null;
 }
 
 //==============================================================

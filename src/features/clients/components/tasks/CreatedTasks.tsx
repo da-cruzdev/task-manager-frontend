@@ -1,12 +1,12 @@
 import { Badge, Button, Table } from "flowbite-react"
 import React, { useEffect, useState } from "react"
-import { selectTasks, selectUser } from "../../redux/clientSelectors"
+import { selectUser } from "../../redux/clientSelectors"
 import { useSelector } from "react-redux"
 import { FiEdit, FiTrash2 } from "react-icons/fi"
-import { CreateTaskData, Tasks } from "../../interfaces/tasks.interfaces"
+import { CreateTaskData, Tasks, TasksFilterOptions } from "../../interfaces/tasks.interfaces"
 import { DeleteModal } from "../modals/DeleteModal"
 import { AppDispatch, useAppDispatch } from "../../../../app/store"
-import { createTask, deleteTask, updateTask } from "../../redux/taskSlice"
+import { createTask, deleteTask, getCreatedTasks, updateTask } from "../../redux/taskSlice"
 import CreateTaskModal from "../modals/CreateTaskModal"
 import { User } from "../../../auth/interfaces/signData.interfaces"
 import { PlusIcon, ClipboardDocumentIcon } from "@heroicons/react/24/outline"
@@ -21,6 +21,7 @@ type TaskCardProps = {
 
 type CreateTaskCardProps = {
   users: User[]
+  filterOptions: TasksFilterOptions
 }
 
 export const formatStatusWithIcon = (status: string): React.ReactNode => {
@@ -60,13 +61,12 @@ export const formatDateWithIcon = (date: Date): React.ReactNode => {
   )
 }
 
-const CreatedTasks: React.FC<CreateTaskCardProps> = ({ users }) => {
+const CreatedTasks: React.FC<CreateTaskCardProps> = ({ users, filterOptions }) => {
   const [createdTasks, setCreatedTasks] = useState<Tasks[]>([])
   const [selectedTask, setSelectedTask] = useState<Tasks | null>(null)
   const [updateModalOpen, setUpdateModalOpen] = useState(false)
   const [selectedTaskForUpdate, setSelectedTaskForUpdate] = useState<Tasks | null>(null)
 
-  const tasks = useSelector(selectTasks)
   const currentUser = useSelector(selectUser)
 
   const [openModal, setOpenModal] = useState(false)
@@ -74,11 +74,19 @@ const CreatedTasks: React.FC<CreateTaskCardProps> = ({ users }) => {
   const dispatch: AppDispatch = useAppDispatch()
 
   useEffect(() => {
-    if (tasks && currentUser) {
-      const userCreatedTasks = tasks.filter((task) => task.owner.id === currentUser.id)
-      setCreatedTasks(userCreatedTasks.reverse())
+    const fetchCreatedTasks = () => {
+      dispatch(getCreatedTasks({ ...filterOptions }))
+        .unwrap()
+        .then((tasks) => {
+          setCreatedTasks(tasks)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     }
-  }, [currentUser, tasks])
+
+    fetchCreatedTasks()
+  }, [currentUser, dispatch, filterOptions])
 
   const handleCreate = (data: CreateTaskData) => {
     dispatch(createTask(data))
@@ -146,41 +154,40 @@ const CreatedTasks: React.FC<CreateTaskCardProps> = ({ users }) => {
           <Table.HeadCell>Action</Table.HeadCell>
         </Table.Head>
         <Table.Body className="divide-y">
-          {createdTasks &&
-            createdTasks.map((task) => (
-              <Table.Row key={task.id} className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">{task.title}</Table.Cell>
-                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                  <div className="flex">
-                    <Badge icon={HiClipboard} size="sm" color="gray" />
-                    {task.description}
-                  </div>
-                </Table.Cell>
-                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">{formatStatusWithIcon(task.status)}</Table.Cell>
-                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">{formatDateWithIcon(task.deadline!!)}</Table.Cell>
-                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                  <div className="flex">
-                    <Badge icon={HiUser} className="mr-1" color="gray" /> {task.assignUser.username}
-                  </div>
-                </Table.Cell>
-                <Table.Cell className="flex mx-auto">
-                  <Button
-                    color="gray"
-                    size="xs"
-                    className=" me-3"
-                    onClick={() => {
-                      setUpdateModalOpen(true)
-                      setSelectedTaskForUpdate(task)
-                    }}
-                  >
-                    <FiEdit color="blue" className="text-lg" />
-                  </Button>
-                  <Button color="gray" size="xs" onClick={() => handleDelete(task)}>
-                    <FiTrash2 color="red" className="text-lg" />
-                  </Button>
-                </Table.Cell>
-              </Table.Row>
-            ))}
+          {createdTasks.map((task) => (
+            <Table.Row key={task.id} className="bg-white dark:border-gray-700 dark:bg-gray-800">
+              <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">{task.title}</Table.Cell>
+              <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                <div className="flex">
+                  <Badge icon={HiClipboard} size="sm" color="gray" />
+                  {task.description}
+                </div>
+              </Table.Cell>
+              <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">{formatStatusWithIcon(task.status)}</Table.Cell>
+              <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">{formatDateWithIcon(task.deadline!!)}</Table.Cell>
+              <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                <div className="flex">
+                  <Badge icon={HiUser} className="mr-1" color="gray" /> {task.assignUser?.username}
+                </div>
+              </Table.Cell>
+              <Table.Cell className="flex mx-auto">
+                <Button
+                  color="gray"
+                  size="xs"
+                  className=" me-3"
+                  onClick={() => {
+                    setUpdateModalOpen(true)
+                    setSelectedTaskForUpdate(task)
+                  }}
+                >
+                  <FiEdit color="blue" className="text-lg" />
+                </Button>
+                <Button color="gray" size="xs" onClick={() => handleDelete(task)}>
+                  <FiTrash2 color="red" className="text-lg" />
+                </Button>
+              </Table.Cell>
+            </Table.Row>
+          ))}
         </Table.Body>
       </Table>
       <UpdateTasksModal

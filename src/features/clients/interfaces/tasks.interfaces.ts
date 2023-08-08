@@ -34,8 +34,8 @@ export interface Tasks {
   status: string
   assignedToId?: number
   deadline: Date | null
-  owner: Owner
-  assignUser: AssignUser
+  owner?: Owner
+  assignUser?: AssignUser
 }
 
 interface Owner {
@@ -43,8 +43,8 @@ interface Owner {
   email: string
   username: string
   role: string
-  createdTasks: Task[]
-  assignedTasks: Task[]
+  createdTasks?: Task[]
+  assignedTasks?: Task[]
 }
 
 interface AssignUser {
@@ -52,6 +52,6 @@ interface AssignUser {
   email: string
   username: string
   role: string
-  createdTasks: Task[]
-  assignedTasks: Task[]
+  createdTasks?: Task[]
+  assignedTasks?: Task[]
 }

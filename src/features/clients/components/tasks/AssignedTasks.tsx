@@ -1,38 +1,44 @@
 import { Badge, Button, Table } from "flowbite-react"
 import React, { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
-import { Tasks } from "../../interfaces/tasks.interfaces"
+import { Tasks, TasksFilterOptions } from "../../interfaces/tasks.interfaces"
 import { FiEdit } from "react-icons/fi"
 import { HiClipboard, HiUser } from "react-icons/hi"
 
-import { selectTasks, selectUser } from "../../redux/clientSelectors"
+import { selectUser } from "../../redux/clientSelectors"
 import UpdateTasksModal from "../modals/UpdateTasksModal"
 import { User } from "../../../auth/interfaces/signData.interfaces"
-import { updateTask } from "../../redux/taskSlice"
+import { getAssignedTasks, updateTask } from "../../redux/taskSlice"
 import { AppDispatch, useAppDispatch } from "../../../../app/store"
 import { formatDateWithIcon, formatStatusWithIcon } from "./CreatedTasks"
 
 type TaskCardProps = {
   users: User[]
+  filterOptions: TasksFilterOptions
 }
 
-const AssignedTasks: React.FC<TaskCardProps> = ({ users }) => {
+const AssignedTasks: React.FC<TaskCardProps> = ({ users, filterOptions }) => {
   const [assignedTasks, setAssignedTasks] = useState<Tasks[]>([])
   const [updateModalOpen, setUpdateModalOpen] = useState(false)
   const [selectedTaskForUpdate, setSelectedTaskForUpdate] = useState<Tasks | null>(null)
 
-  const tasks = useSelector(selectTasks)
+  // const tasks = useSelector(selectTasks)
   const currentUser = useSelector(selectUser)
+  const dispatch: AppDispatch = useAppDispatch()
 
   useEffect(() => {
-    if (tasks && currentUser) {
-      const userAssignedTasks = tasks.filter((task) => task.assignedToId === currentUser.id)
-
-      setAssignedTasks(userAssignedTasks.reverse())
+    const fetchAssignedTasks = () => {
+      dispatch(getAssignedTasks({ ...filterOptions }))
+        .unwrap()
+        .then((tasks) => {
+          setAssignedTasks(tasks)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     }
-  }, [currentUser, tasks])
-
-  const dispatch: AppDispatch = useAppDispatch()
+    fetchAssignedTasks()
+  }, [currentUser, dispatch, filterOptions])
 
   const handleUpdate = (data: any) => {
     dispatch(updateTask(data))
@@ -79,7 +85,7 @@ const AssignedTasks: React.FC<TaskCardProps> = ({ users }) => {
                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">{formatDateWithIcon(task.deadline!!)}</Table.Cell>
                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                   <div className="flex">
-                    <Badge icon={HiUser} className="mr-1" color="white" /> {task.owner.username}
+                    <Badge icon={HiUser} className="mr-1" color="white" /> {task.owner?.username}
                   </div>
                 </Table.Cell>
                 <Table.Cell className="flex mx-auto">

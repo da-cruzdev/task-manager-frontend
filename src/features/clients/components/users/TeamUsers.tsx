@@ -11,7 +11,7 @@ const TeamUsers = () => {
   useEffect(() => {})
 
   const countCreatedTasks = (userId: number) => {
-    return tasks?.filter((task) => task.owner.id === userId).length
+    return tasks?.filter((task) => task.owner?.id === userId).length
   }
 
   const countAssignedTasks = (userId: number) => {

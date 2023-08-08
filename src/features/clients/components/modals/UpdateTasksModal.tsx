@@ -58,7 +58,7 @@ const UpdateTasksModal: React.FC<TaskModalProps & { selectedTask: Tasks | null }
     if (selectedTask) {
       const assignedToAsNumber = Number(data.assignedTo)
       let oldAssignerTo
-      if (selectedTask?.owner.id !== currentUser?.id) {
+      if (selectedTask?.assignedToId === currentUser?.id) {
         oldAssignerTo = currentUser?.id
       }
 
@@ -96,7 +96,7 @@ const UpdateTasksModal: React.FC<TaskModalProps & { selectedTask: Tasks | null }
                     </>
                   )
                 }
-                readOnly={selectedTask?.owner.id !== currentUser?.id}
+                readOnly={selectedTask?.assignedToId === currentUser?.id}
               />
             </div>
             <div>
@@ -119,7 +119,7 @@ const UpdateTasksModal: React.FC<TaskModalProps & { selectedTask: Tasks | null }
                     </>
                   )
                 }
-                readOnly={selectedTask?.owner.id !== currentUser?.id}
+                readOnly={selectedTask?.assignedToId === currentUser?.id}
               />
             </div>
             <div>
@@ -139,7 +139,7 @@ const UpdateTasksModal: React.FC<TaskModalProps & { selectedTask: Tasks | null }
                   )
                 }
                 defaultValue={selectedTask?.assignedToId}
-                disabled={selectedTask?.owner.id !== currentUser?.id}
+                disabled={selectedTask?.assignedToId === currentUser?.id}
               >
                 {users.map((user) => (
                   <option key={user.id} value={user.id}>
@@ -182,7 +182,7 @@ const UpdateTasksModal: React.FC<TaskModalProps & { selectedTask: Tasks | null }
                 value={formattedDeadline}
                 onChange={handleValueChange}
                 minDate={formattedToday}
-                disabled={selectedTask?.owner.id !== currentUser?.id}
+                disabled={selectedTask?.assignedToId === currentUser?.id}
               />
             </div>
 

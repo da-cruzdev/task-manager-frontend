@@ -156,6 +156,45 @@ export const GET_TASKS = gql`
     }
   }
 `
+
+export const GET_CREATED_TASKS = gql`
+  query GetCreatedTasks($filterOptions: TasksFilterOptions) {
+    createdTasks(filterOptions: $filterOptions) {
+      id
+      title
+      description
+      status
+      assignedToId
+      deadline
+      assignUser {
+        id
+        username
+        email
+        role
+      }
+    }
+  }
+`
+
+export const GET_ASSIGNED_TASKS = gql`
+  query GetAssignedTasks($filterOptions: TasksFilterOptions) {
+    assignedTasks(filterOptions: $filterOptions) {
+      id
+      title
+      description
+      status
+      assignedToId
+      deadline
+      owner {
+        id
+        username
+        email
+        role
+      }
+    }
+  }
+`
+
 export const UPDATE_TASK = gql`
   mutation UpdateTask($id: Int!, $title: String!, $description: String!, $status: String!, $assignedTo: Float!, $deadline: DateTime!) {
     updateTask(id: $id, data: { title: $title, description: $description, status: $status, assignedTo: $assignedTo, deadline: $deadline }) {

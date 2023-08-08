@@ -59,8 +59,8 @@ const Dashboard = () => {
         <div className="mt-9">
           <Routes>
             <Route path="" element={<HomeComponent />} />
-            <Route path="/tasks" element={<CreatedTasks users={users} />} />
-            <Route path="/assign" element={<AssignedTasks users={users} />} />
+            <Route path="/tasks" element={<CreatedTasks users={users} filterOptions={filterOptions} />} />
+            <Route path="/assign" element={<AssignedTasks users={users} filterOptions={filterOptions} />} />
             <Route path="/team-users" element={<TeamUsers />} />
           </Routes>
         </div>
