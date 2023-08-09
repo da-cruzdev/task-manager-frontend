@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react"
-import Navbar from "../../components/navbar/Navbar"
 import SidebarComponent from "../../components/sidebar/Sidebar"
 import { Route, Routes } from "react-router-dom"
 import HomeComponent from "../../components/homeComponent/HomeComponent"
@@ -11,9 +10,11 @@ import { getTasks } from "../../redux/taskSlice"
 import { getAllUsers } from "../../redux/userSlice"
 import { User } from "../../../auth/interfaces/signData.interfaces"
 import { TasksFilterOptions } from "../../interfaces/tasks.interfaces"
+import ComplexNavbar from "../../components/navbar/Navbar"
 
 const Dashboard = () => {
   const [users, setUsers] = useState<User[]>([])
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [filterOptions, setFilterOptions] = useState<TasksFilterOptions>({
     query: "",
     status: "",
@@ -54,7 +55,7 @@ const Dashboard = () => {
       </div>
       <div className="w-4/5 mt-4 px-5 mx-auto">
         <div>
-          <Navbar onFilterChange={setFilterOptions} />
+          <ComplexNavbar />
         </div>
         <div className="mt-9">
           <Routes>

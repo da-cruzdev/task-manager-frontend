@@ -1,55 +1,70 @@
 "use client"
-import { Sidebar } from "flowbite-react"
-import { HiClipboardCopy, HiClipboard, HiHome, HiUserGroup } from "react-icons/hi"
 import { NavLink, useLocation } from "react-router-dom"
 import { useEffect, useState } from "react"
+import { Card, Typography, List, ListItem, ListItemPrefix } from "@material-tailwind/react"
+import { ClipboardIcon, ClipboardDocumentListIcon, UserGroupIcon, InboxIcon, HomeIcon } from "@heroicons/react/24/solid"
 
 export default function SidebarComponent() {
   const location = useLocation()
-  const [activeItem, setActiveItem] = useState("dashboard")
+  const [selectedItem, setSelectedItem] = useState("dashboard")
 
-  const handleItemActive = (item: string) => {
-    setActiveItem(item)
+  const handleItemClick = (item: string) => {
+    setSelectedItem(item)
   }
 
   useEffect(() => {
     const pathName = location.pathname
     const lastPath = pathName.substring(pathName.lastIndexOf("/") + 1)
-    setActiveItem(lastPath)
+    setSelectedItem(lastPath)
   }, [location.pathname])
 
   return (
-    <Sidebar aria-label="Default sidebar example" className="h-screen">
-      <Sidebar.Logo href="#" img="./logo.svg">
-        <p>Task Manager</p>
-      </Sidebar.Logo>
-      <Sidebar.Items>
-        <Sidebar.ItemGroup>
-          <NavLink to="/dashboard" className="flex items-center mb-3" onClick={() => handleItemActive("dashboard")}>
-            <Sidebar.Item href="#" icon={HiHome} active={activeItem === "dashboard"}>
-              <p className="text-md font-bold">Accueil</p>
-            </Sidebar.Item>
-          </NavLink>
-
-          <NavLink to="/dashboard/tasks" className="flex items-center mb-5" onClick={() => handleItemActive("tasks")}>
-            <Sidebar.Item href="#" icon={HiClipboard} active={activeItem === "tasks"}>
-              <p className="text-md font-bold">Tâches créées</p>
-            </Sidebar.Item>
-          </NavLink>
-
-          <NavLink to="/dashboard/assign" className="flex items-center mb-5" onClick={() => handleItemActive("assign")}>
-            <Sidebar.Item href="#" icon={HiClipboardCopy} active={activeItem === "assign"}>
-              <p className="text-md font-bold">Tâches assignées</p>
-            </Sidebar.Item>
-          </NavLink>
-
-          <NavLink to="/dashboard/team-users" className="flex items-center" onClick={() => handleItemActive("team-users")}>
-            <Sidebar.Item href="#" icon={HiUserGroup} active={activeItem === "team-users"}>
-              <p className="text-md font-bold">Membres de l'équipe</p>
-            </Sidebar.Item>
-          </NavLink>
-        </Sidebar.ItemGroup>
-      </Sidebar.Items>
-    </Sidebar>
+    <Card className="h-full w-full max-w-[30rem] p-4 shadow-xl shadow-blue-gray-900/5">
+      <div className="mb-2 p-4">
+        <Typography variant="h5" color="blue-gray">
+          Task Manager
+        </Typography>
+      </div>
+      <List>
+        <NavLink to="/dashboard">
+          <ListItem selected={selectedItem === "dashboard"} onClick={() => handleItemClick("dashboard")}>
+            <ListItemPrefix>
+              <HomeIcon className="h-5 w-5" />
+            </ListItemPrefix>
+            Accueil
+          </ListItem>
+        </NavLink>
+        <NavLink to="/dashboard/tasks">
+          <ListItem selected={selectedItem === "tasks"} onClick={() => handleItemClick("tasks")}>
+            <ListItemPrefix>
+              <ClipboardIcon className="h-5 w-5" />
+            </ListItemPrefix>
+            Tâches créées
+          </ListItem>
+        </NavLink>
+        <NavLink to="/dashboard/assign">
+          <ListItem selected={selectedItem === "assign"} onClick={() => handleItemClick("assign")}>
+            <ListItemPrefix>
+              <ClipboardDocumentListIcon className="h-5 w-5" />
+            </ListItemPrefix>
+            Tâches assignées
+          </ListItem>
+        </NavLink>
+        <NavLink to="/dashboard/team-users">
+          <ListItem selected={selectedItem === "team-users"} onClick={() => handleItemClick("team-users")}>
+            <ListItemPrefix>
+              <UserGroupIcon className="h-5 w-5" />
+            </ListItemPrefix>
+            Membres de l'équipe
+          </ListItem>
+        </NavLink>
+        <ListItem>
+          <ListItemPrefix>
+            <InboxIcon className="h-5 w-5" />
+          </ListItemPrefix>
+          Notifications
+        </ListItem>
+      </List>
+    </Card>
   )
 }
