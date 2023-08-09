@@ -53,11 +53,11 @@ const Dashboard = () => {
       <div className="w-1/5 w-64 h-screen ">
         <SidebarComponent />
       </div>
-      <div className="w-4/5 mt-4 px-5 mx-auto">
+      <div className="w-4/5 mt-3 px-5 mx-auto">
         <div>
           <ComplexNavbar />
         </div>
-        <div className="mt-9">
+        <div className="mt-7">
           <Routes>
             <Route path="" element={<HomeComponent />} />
             <Route path="/tasks" element={<CreatedTasks users={users} filterOptions={filterOptions} />} />
