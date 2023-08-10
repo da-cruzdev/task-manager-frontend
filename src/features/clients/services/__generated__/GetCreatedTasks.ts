@@ -3,13 +3,13 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { TasksFilterOptions, TaskStatus } from "./../../../../../__generated__/globalTypes";
+import { TasksFilterOptions, PaginationOptions, TaskStatus } from "./../../../../../__generated__/globalTypes";
 
 // ====================================================
 // GraphQL query operation: GetCreatedTasks
 // ====================================================
 
-export interface GetCreatedTasks_createdTasks_assignUser {
+export interface GetCreatedTasks_createdTasks_data_assignUser {
   __typename: "User";
   id: number;
   username: string;
@@ -17,7 +17,7 @@ export interface GetCreatedTasks_createdTasks_assignUser {
   role: string;
 }
 
-export interface GetCreatedTasks_createdTasks {
+export interface GetCreatedTasks_createdTasks_data {
   __typename: "Task";
   id: number;
   title: string;
@@ -25,13 +25,20 @@ export interface GetCreatedTasks_createdTasks {
   status: TaskStatus;
   assignedToId: number;
   deadline: any | null;
-  assignUser: GetCreatedTasks_createdTasks_assignUser;
+  assignUser: GetCreatedTasks_createdTasks_data_assignUser;
+}
+
+export interface GetCreatedTasks_createdTasks {
+  __typename: "ResponseWithPagination";
+  data: GetCreatedTasks_createdTasks_data[];
+  totalCount: number | null;
 }
 
 export interface GetCreatedTasks {
-  createdTasks: GetCreatedTasks_createdTasks[];
+  createdTasks: GetCreatedTasks_createdTasks;
 }
 
 export interface GetCreatedTasksVariables {
   filterOptions?: TasksFilterOptions | null;
+  paginationOptions?: PaginationOptions | null;
 }

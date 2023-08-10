@@ -1,5 +1,13 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit"
-import { CreateTaskData, Task, Tasks, TasksFilterOptions, UpdateTaskData } from "../interfaces/tasks.interfaces"
+import {
+  CreateTaskData,
+  PaginationOptions,
+  ResponseWithPagination,
+  Task,
+  Tasks,
+  TasksFilterOptions,
+  UpdateTaskData,
+} from "../interfaces/tasks.interfaces"
 import clientServices from "../services/client.services"
 import { ApolloError } from "@apollo/client"
 import toastr from "toastr"
@@ -10,7 +18,7 @@ interface TaskState {
   error: string | null
   task: Tasks | null
   tasks: Tasks[] | null
-  createdTasks: Tasks[] | null
+  createdTasks: ResponseWithPagination | null
   assignedTasks: Tasks[] | null
   updatedTask: Tasks | null
 }
@@ -69,17 +77,18 @@ export const getTasks = createAsyncThunk<Tasks[], TasksFilterOptions, { rejectVa
   },
 )
 
-export const getCreatedTasks = createAsyncThunk<Tasks[], TasksFilterOptions, { rejectValue: string }>(
-  "task/getCreatedTasks",
-  async (filterOptions, { rejectWithValue }) => {
-    try {
-      const response = await clientServices.getCreatedTasks(filterOptions)
-      return response
-    } catch (error: any) {
-      return rejectWithValue(error.message || "Erreur lors de la récupération des tâches")
-    }
-  },
-)
+export const getCreatedTasks = createAsyncThunk<
+  ResponseWithPagination,
+  { filterOptions?: TasksFilterOptions; paginationOptions?: PaginationOptions },
+  { rejectValue: string }
+>("task/getCreatedTasks", async ({ filterOptions, paginationOptions }, { rejectWithValue }) => {
+  try {
+    const response = await clientServices.getCreatedTasks(filterOptions, paginationOptions)
+    return response
+  } catch (error: any) {
+    return rejectWithValue(error.message || "Erreur lors de la récupération des tâches")
+  }
+})
 
 export const getAssignedTasks = createAsyncThunk<Tasks[], TasksFilterOptions, { rejectValue: string }>(
   "task/getAssignedTasks",
@@ -141,7 +150,7 @@ const taskSlice = createSlice({
         state.loading = true
         state.error = null
       })
-      .addCase(getCreatedTasks.fulfilled, (state, action: PayloadAction<Tasks[]>) => {
+      .addCase(getCreatedTasks.fulfilled, (state, action: PayloadAction<ResponseWithPagination>) => {
         state.loading = false
         state.createdTasks = action.payload
       })

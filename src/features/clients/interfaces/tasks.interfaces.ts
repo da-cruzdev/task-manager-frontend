@@ -43,6 +43,11 @@ export interface Tasks {
   assignUser?: AssignUser
 }
 
+export interface ResponseWithPagination {
+  data: Tasks[]
+  totalCount: number
+}
+
 interface Owner {
   id: number
   email: string

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { selectUser } from "../../redux/clientSelectors"
 import { useSelector } from "react-redux"
-import { CreateTaskData, Tasks, TasksFilterOptions } from "../../interfaces/tasks.interfaces"
+import { CreateTaskData, PaginationOptions, Tasks, TasksFilterOptions } from "../../interfaces/tasks.interfaces"
 import { DeleteModal } from "../modals/DeleteModal"
 import { AppDispatch, useAppDispatch } from "../../../../app/store"
 import { createTask, deleteTask, getCreatedTasks, updateTask } from "../../redux/taskSlice"
@@ -10,7 +10,7 @@ import { User } from "../../../auth/interfaces/signData.interfaces"
 import UpdateTasksModal from "../modals/UpdateTasksModal"
 import { Chip } from "@material-tailwind/react"
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
-import { ClipboardDocumentListIcon, ClipboardIcon, PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/solid"
+import { ArrowLeftIcon, ArrowRightIcon, ClipboardDocumentListIcon, ClipboardIcon, PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/solid"
 import {
   Card,
   CardHeader,
@@ -83,6 +83,12 @@ export const CreatedTasks: React.FC<CreateTaskCardProps> = ({ users }) => {
     query: "",
     status: "",
   })
+  const [paginationOptions, setPaginationOptions] = useState<PaginationOptions>({
+    take: 5,
+    skip: 0,
+  })
+  const [active, setActive] = React.useState(1)
+  const [totalCount, setTotalCount] = useState(0)
 
   const currentUser = useSelector(selectUser)
 
@@ -90,9 +96,14 @@ export const CreatedTasks: React.FC<CreateTaskCardProps> = ({ users }) => {
 
   useEffect(() => {
     const fetchCreatedTasks = () => {
-      dispatch(getCreatedTasks({ ...filterOptions }))
+      dispatch(getCreatedTasks({ filterOptions, paginationOptions }))
         .unwrap()
-        .then((tasks) => {
+        .then((data) => {
+          const tasks = data.data
+          console.log(data)
+
+          const total = data.totalCount
+          setTotalCount(total)
           setCreatedTasks(tasks)
         })
         .catch((err) => {
@@ -101,7 +112,7 @@ export const CreatedTasks: React.FC<CreateTaskCardProps> = ({ users }) => {
     }
 
     fetchCreatedTasks()
-  }, [currentUser, dispatch, filterOptions])
+  }, [currentUser, dispatch, filterOptions, paginationOptions])
 
   const handleCreate = (data: CreateTaskData) => {
     dispatch(createTask(data))
@@ -156,6 +167,23 @@ export const CreatedTasks: React.FC<CreateTaskCardProps> = ({ users }) => {
   function handleTabClick(event: any, tabValue: string) {
     const newFilterOptions = { ...filterOptions, status: tabValue }
     setFilterOptions(newFilterOptions)
+  }
+  const totalPages = Math.ceil(totalCount / paginationOptions.take!!)
+
+  const getItemProps = (index: any) =>
+    ({
+      variant: active === index ? "filled" : "text",
+      color: "blue",
+      onClick: () => handlePageChange(index),
+      className: "rounded-full",
+    } as any)
+
+  const handlePageChange = (newPage: number) => {
+    setActive(newPage)
+    setPaginationOptions((prevOptions) => ({
+      ...prevOptions,
+      skip: (newPage - 1) * prevOptions.take!!,
+    }))
   }
 
   return (
@@ -294,15 +322,29 @@ export const CreatedTasks: React.FC<CreateTaskCardProps> = ({ users }) => {
         </table>
       </CardBody>
       <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
-        <Typography variant="small" color="blue-gray" className="font-normal">
-          Page 1 of 10
-        </Typography>
-        <div className="flex gap-2">
-          <Button variant="outlined" size="sm">
-            Previous
+        <div className="flex items-center gap-4 mx-auto">
+          <Button
+            variant="text"
+            className="flex items-center gap-2 rounded-full"
+            onClick={() => handlePageChange(active - 1)}
+            disabled={active === 1}
+          >
+            <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" />
           </Button>
-          <Button variant="outlined" size="sm">
-            Next
+          <div className="flex items-center gap-2">
+            {Array.from({ length: totalPages }).map((_, index) => (
+              <IconButton {...getItemProps(index + 1)} key={index} onClick={() => handlePageChange(index + 1)}>
+                {index + 1}
+              </IconButton>
+            ))}
+          </div>
+          <Button
+            variant="text"
+            className="flex items-center gap-2 rounded-full"
+            onClick={() => handlePageChange(active + 1)}
+            disabled={active === totalPages}
+          >
+            <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
           </Button>
         </div>
       </CardFooter>

@@ -158,20 +158,23 @@ export const GET_TASKS = gql`
 `
 
 export const GET_CREATED_TASKS = gql`
-  query GetCreatedTasks($filterOptions: TasksFilterOptions) {
-    createdTasks(filterOptions: $filterOptions) {
-      id
-      title
-      description
-      status
-      assignedToId
-      deadline
-      assignUser {
+  query GetCreatedTasks($filterOptions: TasksFilterOptions, $paginationOptions: PaginationOptions) {
+    createdTasks(filterOptions: $filterOptions, paginationOptions: $paginationOptions) {
+      data {
         id
-        username
-        email
-        role
+        title
+        description
+        status
+        assignedToId
+        deadline
+        assignUser {
+          id
+          username
+          email
+          role
+        }
       }
+      totalCount
     }
   }
 `

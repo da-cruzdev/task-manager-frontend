@@ -16,6 +16,11 @@ export enum TaskStatus {
   PENDING = "PENDING",
 }
 
+export interface PaginationOptions {
+  skip?: number | null;
+  take?: number | null;
+}
+
 export interface TasksFilterOptions {
   query?: string | null;
   status?: string | null;
