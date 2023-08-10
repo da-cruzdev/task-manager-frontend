@@ -16,7 +16,6 @@ import {
 } from "@material-tailwind/react"
 import React, { useEffect, useState } from "react"
 import UpdateTasksModal from "../modals/UpdateTasksModal"
-import { StatusChip, formatDate } from "./CreatedTasks"
 import { useSelector } from "react-redux"
 import { Tasks, TasksFilterOptions } from "../../interfaces/tasks.interfaces"
 
@@ -25,6 +24,7 @@ import { User } from "../../../auth/interfaces/signData.interfaces"
 import { getAssignedTasks, updateTask } from "../../redux/taskSlice"
 import { AppDispatch, useAppDispatch } from "../../../../app/store"
 import { useForm } from "react-hook-form"
+import { StatusChip, formatDate } from "../../../shared/utils/fonctions"
 
 type TaskCardProps = {
   users: User[]
