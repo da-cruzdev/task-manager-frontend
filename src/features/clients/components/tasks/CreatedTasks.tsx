@@ -10,7 +10,7 @@ import { User } from "../../../auth/interfaces/signData.interfaces"
 import UpdateTasksModal from "../modals/UpdateTasksModal"
 import { Chip } from "@material-tailwind/react"
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
-import { ArrowLeftIcon, ArrowRightIcon, ClipboardDocumentListIcon, ClipboardIcon, PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/solid"
+import { ClipboardDocumentListIcon, ClipboardIcon, PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/solid"
 import {
   Card,
   CardHeader,
@@ -27,6 +27,7 @@ import {
   Avatar,
 } from "@material-tailwind/react"
 import { useForm } from "react-hook-form"
+import Pagination from "../pagination/Pagination"
 
 const TABLE_HEAD = ["Titre", "Description", "Statut", "Deadline", "Assignée à", "Action"]
 
@@ -169,14 +170,6 @@ export const CreatedTasks: React.FC<CreateTaskCardProps> = ({ users }) => {
     setFilterOptions(newFilterOptions)
   }
   const totalPages = Math.ceil(totalCount / paginationOptions.take!!)
-
-  const getItemProps = (index: any) =>
-    ({
-      variant: active === index ? "filled" : "text",
-      color: "blue",
-      onClick: () => handlePageChange(index),
-      className: "rounded-full",
-    } as any)
 
   const handlePageChange = (newPage: number) => {
     setActive(newPage)
@@ -322,31 +315,7 @@ export const CreatedTasks: React.FC<CreateTaskCardProps> = ({ users }) => {
         </table>
       </CardBody>
       <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
-        <div className="flex items-center gap-4 mx-auto">
-          <Button
-            variant="text"
-            className="flex items-center gap-2 rounded-full"
-            onClick={() => handlePageChange(active - 1)}
-            disabled={active === 1}
-          >
-            <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" />
-          </Button>
-          <div className="flex items-center gap-2">
-            {Array.from({ length: totalPages }).map((_, index) => (
-              <IconButton {...getItemProps(index + 1)} key={index} onClick={() => handlePageChange(index + 1)}>
-                {index + 1}
-              </IconButton>
-            ))}
-          </div>
-          <Button
-            variant="text"
-            className="flex items-center gap-2 rounded-full"
-            onClick={() => handlePageChange(active + 1)}
-            disabled={active === totalPages}
-          >
-            <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
-          </Button>
-        </div>
+        <Pagination totalPages={totalPages} activePage={active} onPageChange={handlePageChange} />
       </CardFooter>
     </Card>
   )
