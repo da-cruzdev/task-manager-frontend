@@ -10,7 +10,6 @@ export const PasswordInput = ({ register, errors }: { register: any; errors: any
           pattern: { value: /^[A-Za-z0-9]{8,30}$/, message: "Le mot de passe doit avoir au moins 8 caractères" },
         })}
         type="Password"
-        color="none"
         error={errors.password ? true : false}
       />
       {errors.password && (

@@ -19,7 +19,7 @@ export default function SidebarComponent() {
   }, [location.pathname])
 
   return (
-    <Card className="h-full w-full max-w-[30rem] p-4 shadow-xl shadow-blue-gray-900/5">
+    <Card className="fixed h-full w-64 max-w-[30rem] p-4 shadow-xl shadow-blue-gray-900/5">
       <div className="mb-2 p-4">
         <Typography variant="h5" color="blue-gray">
           Task Manager

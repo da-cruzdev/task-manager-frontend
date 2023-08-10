@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react"
 import SidebarComponent from "../../components/sidebar/Sidebar"
 import { Route, Routes } from "react-router-dom"
 import HomeComponent from "../../components/homeComponent/HomeComponent"
-import CreatedTasks from "../../components/tasks/CreatedTasks"
 import AssignedTasks from "../../components/tasks/AssignedTasks"
 import TeamUsers from "../../components/users/TeamUsers"
 import { AppDispatch, useAppDispatch } from "../../../../app/store"
@@ -11,6 +10,7 @@ import { getAllUsers } from "../../redux/userSlice"
 import { User } from "../../../auth/interfaces/signData.interfaces"
 import { TasksFilterOptions } from "../../interfaces/tasks.interfaces"
 import ComplexNavbar from "../../components/navbar/Navbar"
+import CreatedTasks from "../../components/tasks/CreatedTasks"
 
 const Dashboard = () => {
   const [users, setUsers] = useState<User[]>([])
@@ -57,11 +57,11 @@ const Dashboard = () => {
         <div>
           <ComplexNavbar />
         </div>
-        <div className="mt-7">
+        <div className="mt-5">
           <Routes>
             <Route path="" element={<HomeComponent />} />
-            <Route path="/tasks" element={<CreatedTasks users={users} filterOptions={filterOptions} />} />
-            <Route path="/assign" element={<AssignedTasks users={users} filterOptions={filterOptions} />} />
+            <Route path="/tasks" element={<CreatedTasks users={users} />} />
+            <Route path="/assign" element={<AssignedTasks users={users} />} />
             <Route path="/team-users" element={<TeamUsers />} />
           </Routes>
         </div>
