@@ -155,6 +155,13 @@ export const CreatedTasks: React.FC<CreateTaskCardProps> = ({ users }) => {
               <PlusIcon strokeWidth={2} className="h-4 w-4" /> Créer une tâche
             </Button>
             <CreateTaskModal open={createModalOpen} onClose={() => setCreateModalOpen(false)} users={users} onSubmit={handleCreate} />
+            <UpdateTasksModal
+              open={updateModalOpen}
+              onClose={() => setUpdateModalOpen(false)}
+              users={users}
+              selectedTask={selectedTaskForUpdate}
+              onSubmit={handleUpdate}
+            />
           </div>
         </div>
         <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
@@ -262,13 +269,7 @@ export const CreatedTasks: React.FC<CreateTaskCardProps> = ({ users }) => {
                       <TrashIcon className="h-4 w-4" color="red" />
                     </IconButton>
                   </Tooltip>
-                  <UpdateTasksModal
-                    open={updateModalOpen}
-                    onClose={() => setUpdateModalOpen(false)}
-                    users={users}
-                    selectedTask={selectedTaskForUpdate}
-                    onSubmit={handleUpdate}
-                  />
+
                   <DeleteModal isOpen={openDeleteModal} onClose={() => setDeleteModal(false)} onConfirm={handleDeleteConfirm} />
                 </td>
               </tr>

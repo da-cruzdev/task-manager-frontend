@@ -1,12 +1,24 @@
-import { Modal, Label, TextInput, Button, Select, Textarea, Spinner } from "flowbite-react"
 import React, { useState } from "react"
 import Datepicker, { DateValueType } from "react-tailwindcss-datepicker"
-import dayjs from "dayjs"
 import { RootState } from "../../../../app/store"
 import { useSelector } from "react-redux"
 import { User } from "../../../auth/interfaces/signData.interfaces"
-import { useForm } from "react-hook-form"
+import { Controller, useForm } from "react-hook-form"
 import { CreateTaskData } from "../../interfaces/tasks.interfaces"
+import {
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Option,
+  Dialog,
+  Input,
+  Select,
+  Textarea,
+  Typography,
+  Spinner,
+} from "@material-tailwind/react"
 
 type TaskModalProps = {
   open: boolean
@@ -29,17 +41,19 @@ export const useDatePicker = (initialValue: DateValueType) => {
     setValue(newValue)
   }
 
+  const resetDatePicker = () => {
+    setValue(initialValue)
+  }
+
   return {
     value,
     onChange: handleChange,
+    resetDatePicker,
   }
 }
 
 const CreateTaskModal: React.FC<TaskModalProps> = ({ open, onClose, users, onSubmit }) => {
-  const { value, onChange } = useDatePicker({
-    startDate: new Date(),
-    endDate: dayjs(new Date()).add(1, "month").toDate(),
-  })
+  const { value, onChange, resetDatePicker } = useDatePicker(null)
 
   const handleValueChange = (newValue: any) => {
     console.log("newValue:", newValue)
@@ -55,6 +69,7 @@ const CreateTaskModal: React.FC<TaskModalProps> = ({ open, onClose, users, onSub
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors },
   } = useForm<TaskFormData>()
 
@@ -77,100 +92,110 @@ const CreateTaskModal: React.FC<TaskModalProps> = ({ open, onClose, users, onSub
 
     if (formDataWithDatePicker) {
       onSubmit(formDataWithDatePicker)
-      reset()
+
+      reset({ title: "", description: "", assignedTo: "", deadline: "" })
+      resetDatePicker()
     }
   }
 
   return (
     <>
-      <Modal show={open} size="lg" popup onClose={onClose}>
-        <Modal.Header />
-        <Modal.Body>
-          <div className="space-y-3">
-            <h3 className="text-xl font-medium text-gray-900 dark:text-white">Créer une tâche</h3>
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="title" value="Titre" />
-              </div>
-              <TextInput
-                {...register("title", {
-                  required: "Ce champ est requis",
-                  minLength: { value: 4, message: "Le titre doit avoir au moins 4 caractères" },
-                })}
-                id="title"
-                color={errors.title && "failure"}
-                helperText={
-                  errors.title && (
-                    <>
-                      <span className="font-medium">Oops!</span>
-                      {errors.title?.message}
-                    </>
-                  )
-                }
-              />
-            </div>
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="description" value="Description" />
-              </div>
-              <Textarea
-                {...register("description", {
-                  required: "Ce champ est requis",
-                  minLength: { value: 15, message: "La description doit être plus explicite et avoir au moins 15 caractères" },
-                })}
-                id="description"
-                rows={3}
-                color={errors.description && "failure"}
-                helperText={
-                  errors.description && (
-                    <>
-                      <span className="font-medium">Oops!</span>
-                      {errors.description?.message}
-                    </>
-                  )
-                }
-              />
-            </div>
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="assignedTo" value="Assignée à" />
-              </div>
-              <Select
-                {...register("assignedTo", {
-                  required: "Ce champ est requis",
-                })}
-                id="assignedTo"
-                color={errors.assignedTo && "failure"}
-                helperText={
-                  errors.assignedTo && (
-                    <>
-                      <span className="font-medium">Oops!</span>
-                      {errors.assignedTo?.message}
-                    </>
-                  )
-                }
-              >
-                <option></option>
-                {users.map((user) => (
-                  <option key={user.id} value={user.id}>
-                    {user.username}
-                  </option>
-                ))}
-              </Select>
-            </div>
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="deadline" value="Deadline" />
-              </div>
-              <Datepicker value={value} onChange={handleValueChange} minDate={formattedToday} />
-            </div>
+      <Dialog open={open} handler={onClose} className="bg-transparent shadow-none">
+        <Card className="mx-auto w-full max-w-[48rem]">
+          <CardHeader variant="filled" color="blue" className="mb-4 grid h-14 place-items-center">
+            <Typography variant="h5" color="white">
+              Créer une nouvelle tâche
+            </Typography>
+          </CardHeader>
+          <CardBody className="flex flex-col gap-4">
+            <Input
+              label="Titre"
+              size="lg"
+              {...register("title", {
+                required: "Le titre est obligatoire",
+                minLength: { value: 4, message: "Le titre doit avoir au moins 4 caractères" },
+              })}
+              error={errors.title ? true : false}
+            />
+            {errors.title && (
+              <Typography variant="small" color="red" className="flex items-center gap-1 font-normal">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="-mt-px h-4 w-4">
+                  <path
+                    fillRule="evenodd"
+                    d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                {errors.title?.message}
+              </Typography>
+            )}
 
-            <div className="w-full">
-              <Button onClick={handleSubmit(handleCreateTask)}>{loading ? <Spinner></Spinner> : "Créer"}</Button>
-            </div>
-          </div>
-        </Modal.Body>
-      </Modal>
+            <Textarea
+              label="Description"
+              {...register("description", {
+                required: "Veuillez mettre une description",
+                minLength: { value: 15, message: "La description doit être plus explicite et avoir au moins 15 caractères" },
+              })}
+              error={errors.description ? true : false}
+            />
+            {errors.description && (
+              <Typography variant="small" color="red" className="flex items-center gap-1 font-normal">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="-mt-px h-4 w-4">
+                  <path
+                    fillRule="evenodd"
+                    d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                {errors.description?.message}
+              </Typography>
+            )}
+            <Controller
+              control={control}
+              name="assignedTo"
+              rules={{ required: "Veuillez sélectionner un utilisateur" }}
+              render={({ field: { value, onChange }, fieldState }) => (
+                <Select
+                  label="Assignée à"
+                  value={value}
+                  error={fieldState.error ? true : false}
+                  onChange={(selectedValue) => {
+                    onChange(selectedValue)
+                  }}
+                >
+                  {users.map((user) => (
+                    <Option key={user.id} value={user.id.toString()}>
+                      {user.username}
+                    </Option>
+                  ))}
+                </Select>
+              )}
+            />
+            {errors.assignedTo && (
+              <Typography variant="small" color="red" className="flex items-center gap-1 font-normal">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="-mt-px h-4 w-4">
+                  <path
+                    fillRule="evenodd"
+                    d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                {errors.assignedTo?.message}
+              </Typography>
+            )}
+
+            <Datepicker placeholder="Deadline" value={value} onChange={handleValueChange} minDate={formattedToday} />
+          </CardBody>
+          <CardFooter className="flex mx-auto">
+            <Button variant="gradient" onClick={handleSubmit(handleCreateTask)} className="mr-5">
+              {loading ? <Spinner /> : "Créer"}
+            </Button>
+            <Button variant="outlined" onClick={onClose}>
+              Annuler
+            </Button>
+          </CardFooter>
+        </Card>
+      </Dialog>
     </>
   )
 }

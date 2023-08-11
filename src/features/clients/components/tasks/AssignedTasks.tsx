@@ -138,6 +138,13 @@ const AssignedTasks: React.FC<TaskCardProps> = ({ users }) => {
                   setFilterOptions(newFilterOptions)
                 }}
               />
+              <UpdateTasksModal
+                open={updateModalOpen}
+                onClose={() => setUpdateModalOpen(false)}
+                users={users}
+                selectedTask={selectedTaskForUpdate}
+                onSubmit={handleUpdate}
+              />
             </div>
           </div>
         </CardHeader>
@@ -210,14 +217,6 @@ const AssignedTasks: React.FC<TaskCardProps> = ({ users }) => {
                         <PencilIcon className="h-4 w-4" />
                       </IconButton>
                     </Tooltip>
-
-                    <UpdateTasksModal
-                      open={updateModalOpen}
-                      onClose={() => setUpdateModalOpen(false)}
-                      users={users}
-                      selectedTask={selectedTaskForUpdate}
-                      onSubmit={handleUpdate}
-                    />
                   </td>
                 </tr>
               ))}

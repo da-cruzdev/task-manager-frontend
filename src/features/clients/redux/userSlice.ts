@@ -54,6 +54,7 @@ export const UpdateUser = createAsyncThunk<UpdateUserResponse, UpdateUserData, {
         // const refreshToken = response.refreshToken
         authServices.setToken(token)
       }
+      toastr.success("Profil modifié avec succès")
       return response
     } catch (error: any) {
       toastr.error(error)

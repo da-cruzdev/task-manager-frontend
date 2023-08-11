@@ -1,6 +1,5 @@
-import { Modal, Label, TextInput, Textarea, Select, Button, Spinner } from "flowbite-react"
 import React, { useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
+import { Controller, useForm } from "react-hook-form"
 import Datepicker, { DateValueType } from "react-tailwindcss-datepicker"
 import { User } from "../../../auth/interfaces/signData.interfaces"
 import dayjs from "dayjs"
@@ -8,6 +7,20 @@ import { useSelector } from "react-redux"
 import { RootState } from "../../../../app/store"
 import { Tasks, UpdateTaskData } from "../../interfaces/tasks.interfaces"
 import { selectUser } from "../../redux/clientSelectors"
+import {
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Dialog,
+  Input,
+  Select,
+  Textarea,
+  Typography,
+  Option,
+  Spinner,
+} from "@material-tailwind/react"
 
 type TaskModalProps = {
   open: boolean
@@ -26,6 +39,7 @@ const UpdateTasksModal: React.FC<TaskModalProps & { selectedTask: Tasks | null }
     register,
     handleSubmit,
     setValue,
+    control,
     formState: { errors },
   } = useForm()
   const currentUser = useSelector(selectUser)
@@ -49,7 +63,7 @@ const UpdateTasksModal: React.FC<TaskModalProps & { selectedTask: Tasks | null }
         endDate: selectedTask.deadline ? dayjs(selectedTask.deadline).toDate() : dayjs(new Date()).add(1, "month").toDate(),
       })
     }
-  }, [currentUser?.id, selectedTask, setValue])
+  }, [currentUser?.id, selectedTask, setValue, users])
 
   const handleUpdateSubmit = (data: UpdateTaskData) => {
     const endDate = typeof formattedDeadline?.endDate === "string" ? new Date(formattedDeadline.endDate) : formattedDeadline?.endDate
@@ -71,128 +85,129 @@ const UpdateTasksModal: React.FC<TaskModalProps & { selectedTask: Tasks | null }
   }
 
   return (
-    <div>
-      <Modal show={open} size="lg" popup onClose={onClose}>
-        <Modal.Header />
-        <Modal.Body>
-          <div className="space-y-3">
-            <h3 className="text-xl font-medium text-gray-900 dark:text-white">Modifier la tâche</h3>
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="title" value="Titre" />
-              </div>
-              <TextInput
-                {...register("title", {
-                  required: "Ce champ est requis",
-                  minLength: { value: 4, message: "Le titre doit avoir au moins 4 caractères" },
-                })}
-                id="title"
-                color={errors.title && "failure"}
-                helperText={
-                  errors.title && (
-                    <>
-                      <span className="font-medium">Oops!</span>
-                      {errors.title?.message}
-                    </>
-                  )
-                }
-                readOnly={selectedTask?.assignedToId === currentUser?.id}
-              />
-            </div>
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="description" value="Description" />
-              </div>
-              <Textarea
-                {...register("description", {
-                  required: "Ce champ est requis",
-                  minLength: { value: 15, message: "La description doit être plus explicite et avoir au moins 15 caractères" },
-                })}
-                id="description"
-                rows={3}
-                color={errors.description && "failure"}
-                helperText={
-                  errors.description && (
-                    <>
-                      <span className="font-medium">Oops!</span>
-                      {errors.description?.message}
-                    </>
-                  )
-                }
-                readOnly={selectedTask?.assignedToId === currentUser?.id}
-              />
-            </div>
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="assignedTo" value="Assignée à" />
-              </div>
-              <Select
-                {...register("assignedTo")}
-                id="assignedTo"
-                color={errors.assignedTo && "failure"}
-                helperText={
-                  errors.assignedTo && (
-                    <>
-                      <span className="font-medium">Oops!</span>
-                      {errors.assignedTo?.message}
-                    </>
-                  )
-                }
-                defaultValue={selectedTask?.assignedToId}
-                disabled={selectedTask?.assignedToId === currentUser?.id}
-              >
-                {users.map((user) => (
-                  <option key={user.id} value={user.id}>
-                    {user.username}
-                  </option>
-                ))}
-              </Select>
-            </div>
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="status" value="Statut" />
-              </div>
-              <Select
-                {...register("status", {
-                  required: "Ce champ est requis",
-                })}
-                id="status"
-                color={errors.status && "failure"}
-                helperText={
-                  errors.status && (
-                    <>
-                      <span className="font-medium">Oops!</span>
-                      {errors.status?.message}
-                    </>
-                  )
-                }
-                disabled={false}
-              >
-                <option value="PENDING">En attente</option>
-                <option value="IN_PROGRESS">En cours</option>
-                <option value="DONE">Terminé</option>
-              </Select>
-            </div>
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="deadline" value="Deadline" />
-              </div>
+    <>
+      <Dialog open={open} handler={onClose} className="bg-transparent shadow-none">
+        <Card className="mx-auto w-full max-w-[48rem]">
+          <CardHeader variant="filled" color="blue" className="mb-4 grid h-14 place-items-center">
+            <Typography variant="h5" color="white">
+              Modifier la tâche
+            </Typography>
+          </CardHeader>
+          <CardBody className="flex flex-col gap-4">
+            <Input
+              label="Titre"
+              size="lg"
+              {...register("title", {
+                required: "Le titre est obligatoire",
+                minLength: { value: 4, message: "Le titre doit avoir au moins 4 caractères" },
+              })}
+              error={errors.title ? true : false}
+              disabled={selectedTask?.assignedToId === currentUser?.id}
+            />
+            {errors.title && (
+              <Typography variant="small" color="red" className="flex items-center gap-1 font-normal">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="-mt-px h-4 w-4">
+                  <path
+                    fillRule="evenodd"
+                    d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                {errors.title?.message}
+              </Typography>
+            )}
 
-              <Datepicker
-                value={formattedDeadline}
-                onChange={handleValueChange}
-                minDate={formattedToday}
-                disabled={selectedTask?.assignedToId === currentUser?.id}
-              />
-            </div>
+            <Textarea
+              label="Description"
+              {...register("description", {
+                required: "Veuillez mettre une description",
+                minLength: { value: 15, message: "La description doit être plus explicite et avoir au moins 15 caractères" },
+              })}
+              error={errors.description ? true : false}
+              disabled={selectedTask?.assignedToId === currentUser?.id}
+            />
+            {errors.description && (
+              <Typography variant="small" color="red" className="flex items-center gap-1 font-normal">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="-mt-px h-4 w-4">
+                  <path
+                    fillRule="evenodd"
+                    d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                {errors.description?.message}
+              </Typography>
+            )}
+            <Controller
+              control={control}
+              name="assignedTo"
+              rules={{ required: "Veuillez sélectionner un utilisateur" }}
+              defaultValue={selectedTask?.assignedToId?.toString()}
+              render={({ field: { value, onChange }, fieldState }) => (
+                <Select
+                  label="Assignée à"
+                  value={value}
+                  error={fieldState.error ? true : false}
+                  onChange={onChange}
+                  disabled={selectedTask?.assignedToId === currentUser?.id}
+                >
+                  {users.map((user) => (
+                    <Option key={user.id} value={user.id.toString()}>
+                      {user.username}
+                    </Option>
+                  ))}
+                </Select>
+              )}
+            />
+            {errors.assignedTo && (
+              <Typography variant="small" color="red" className="flex items-center gap-1 font-normal">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="-mt-px h-4 w-4">
+                  <path
+                    fillRule="evenodd"
+                    d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                {errors.assignedTo?.message}
+              </Typography>
+            )}
+            <Controller
+              control={control}
+              name="status"
+              render={({ field: { value, onChange }, fieldState }) => (
+                <Select label="Statut" value={value} error={fieldState.error ? true : false} onChange={onChange}>
+                  <Option key="PENDING" value="PENDING">
+                    En attente
+                  </Option>
+                  <Option key="IN_PROGRESS" value="IN_PROGRESS">
+                    En cours
+                  </Option>
+                  <Option key="DONE" value="DONE">
+                    Terminée
+                  </Option>
+                </Select>
+              )}
+            />
 
-            <div className="w-full">
-              <Button onClick={handleSubmit(handleUpdateSubmit)}>{loading ? <Spinner></Spinner> : "Modifier"}</Button>
-            </div>
-          </div>
-        </Modal.Body>
-      </Modal>
-    </div>
+            <Datepicker
+              placeholder="Deadline"
+              value={formattedDeadline}
+              onChange={handleValueChange}
+              minDate={formattedToday}
+              disabled={selectedTask?.assignedToId === currentUser?.id}
+            />
+          </CardBody>
+          <CardFooter className="flex mx-auto">
+            <Button variant="gradient" onClick={handleSubmit(handleUpdateSubmit)} className="mr-5">
+              {loading ? <Spinner /> : "Modifier"}
+            </Button>
+            <Button variant="outlined" onClick={onClose}>
+              Annuler
+            </Button>
+          </CardFooter>
+        </Card>
+      </Dialog>
+    </>
   )
 }
 

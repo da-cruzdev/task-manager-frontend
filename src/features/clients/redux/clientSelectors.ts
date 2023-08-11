@@ -1,6 +1,7 @@
 import { RootState } from "../../../app/store"
 
 export const selectUser = (state: RootState) => state.client.user
+export const selectError = (state: RootState) => state.user.error
 
 export const selectTasks = (state: RootState) => state.task.tasks
 
