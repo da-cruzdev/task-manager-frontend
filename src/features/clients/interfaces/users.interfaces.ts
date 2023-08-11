@@ -12,3 +12,13 @@ export interface UpdateUserResponse {
   accessToken: string
   refreshToken: string
 }
+
+export interface UsersFilterOptions {
+  role?: string
+  query?: string
+}
+
+export interface UserResponseData {
+  data: User[]
+  totalCount: number
+}

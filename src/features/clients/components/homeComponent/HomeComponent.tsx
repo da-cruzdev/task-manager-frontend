@@ -18,7 +18,7 @@ const HomeComponent = () => {
         <AssignedTaskCard link="/dashboard/assign" />
       </div>
       <div className="md:col-span-2 md:row-span-2">
-        <UserTeamCard users={users} />
+        <UserTeamCard users={users!!} />
       </div>
       <div className="md:col-span-4">
         <TasksProgression />

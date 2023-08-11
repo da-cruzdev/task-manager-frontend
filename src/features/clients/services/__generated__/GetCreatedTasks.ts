@@ -30,7 +30,7 @@ export interface GetCreatedTasks_createdTasks_data {
 
 export interface GetCreatedTasks_createdTasks {
   __typename: "ResponseWithPagination";
-  data: GetCreatedTasks_createdTasks_data[];
+  data: GetCreatedTasks_createdTasks_data[] | null;
   totalCount: number | null;
 }
 

@@ -37,12 +37,15 @@ export const UPDATE_USER_INFO = gql`
 `
 
 export const GET_ALL_USERS = gql`
-  query GetAllUsers {
-    users {
-      id
-      username
-      email
-      role
+  query GetAllUsers($filterOptions: UsersFilterOptions, $paginationOptions: PaginationOptions) {
+    users(filterOptions: $filterOptions, paginationOptions: $paginationOptions) {
+      data {
+        id
+        username
+        email
+        role
+      }
+      totalCount
     }
   }
 `
@@ -180,20 +183,23 @@ export const GET_CREATED_TASKS = gql`
 `
 
 export const GET_ASSIGNED_TASKS = gql`
-  query GetAssignedTasks($filterOptions: TasksFilterOptions) {
-    assignedTasks(filterOptions: $filterOptions) {
-      id
-      title
-      description
-      status
-      assignedToId
-      deadline
-      owner {
+  query GetAssignedTasks($filterOptions: TasksFilterOptions, $paginationOptions: PaginationOptions) {
+    assignedTasks(filterOptions: $filterOptions, paginationOptions: $paginationOptions) {
+      data {
         id
-        username
-        email
-        role
+        title
+        description
+        status
+        assignedToId
+        deadline
+        owner {
+          id
+          username
+          email
+          role
+        }
       }
+      totalCount
     }
   }
 `

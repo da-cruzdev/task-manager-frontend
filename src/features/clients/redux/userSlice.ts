@@ -4,14 +4,15 @@ import authServices from "../../auth/services/auth.services"
 import toastr from "toastr"
 import "toastr/build/toastr.css"
 import clientServices from "../services/client.services"
-import { UpdateUserData, UpdateUserResponse } from "../interfaces/users.interfaces"
+import { UpdateUserData, UpdateUserResponse, UserResponseData, UsersFilterOptions } from "../interfaces/users.interfaces"
+import { PaginationOptions } from "../interfaces/tasks.interfaces"
 
 interface UserState {
   data: User | null
   loading: boolean
   error: string | null
   loggedOut: LogoutResponse | null
-  users: User[] | null
+  users: UserResponseData | null
   updatedUser: UpdateUserResponse | null
 }
 
@@ -24,12 +25,16 @@ const initialState: UserState = {
   updatedUser: null,
 }
 
-export const getAllUsers = createAsyncThunk<User[], void, { rejectValue: string }>(
+export const getAllUsers = createAsyncThunk<
+  UserResponseData,
+  { filterOptions?: UsersFilterOptions; paginationOptions: PaginationOptions },
+  { rejectValue: string }
+>(
   "user/users",
 
-  async (_, { rejectWithValue }) => {
+  async ({ filterOptions, paginationOptions }, { rejectWithValue }) => {
     try {
-      const response = await clientServices.getAllUsers()
+      const response = await clientServices.getAllUsers(filterOptions, paginationOptions)
 
       return response
     } catch (error: any) {
@@ -97,7 +102,7 @@ const userSlice = createSlice({
       .addCase(getAllUsers.pending, (state) => {
         state.loading = true
       })
-      .addCase(getAllUsers.fulfilled, (state, action: PayloadAction<User[]>) => {
+      .addCase(getAllUsers.fulfilled, (state, action: PayloadAction<UserResponseData>) => {
         state.loading = false
         state.users = action.payload
       })

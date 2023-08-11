@@ -26,6 +26,11 @@ export interface TasksFilterOptions {
   status?: string | null;
 }
 
+export interface UsersFilterOptions {
+  query?: string | null;
+  role?: string | null;
+}
+
 //==============================================================
 // END Enums and Input Objects
 //==============================================================

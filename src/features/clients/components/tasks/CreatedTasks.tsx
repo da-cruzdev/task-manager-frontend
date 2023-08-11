@@ -63,7 +63,6 @@ export const CreatedTasks: React.FC<CreateTaskCardProps> = ({ users }) => {
         .unwrap()
         .then((data) => {
           const tasks = data.data
-          console.log(data)
 
           const total = data.totalCount
           setTotalCount(total)
@@ -131,6 +130,7 @@ export const CreatedTasks: React.FC<CreateTaskCardProps> = ({ users }) => {
     const newFilterOptions = { ...filterOptions, status: tabValue }
     setFilterOptions(newFilterOptions)
   }
+
   const totalPages = Math.ceil(totalCount / paginationOptions.take!!)
 
   const handlePageChange = (newPage: number) => {

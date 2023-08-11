@@ -19,7 +19,7 @@ interface TaskState {
   task: Tasks | null
   tasks: Tasks[] | null
   createdTasks: ResponseWithPagination | null
-  assignedTasks: Tasks[] | null
+  assignedTasks: ResponseWithPagination | null
   updatedTask: Tasks | null
 }
 
@@ -90,17 +90,18 @@ export const getCreatedTasks = createAsyncThunk<
   }
 })
 
-export const getAssignedTasks = createAsyncThunk<Tasks[], TasksFilterOptions, { rejectValue: string }>(
-  "task/getAssignedTasks",
-  async (filterOptions, { rejectWithValue }) => {
-    try {
-      const response = await clientServices.getAssignedTasks(filterOptions)
-      return response
-    } catch (error: any) {
-      return rejectWithValue(error.message || "Erreur lors de la récupération des tâches")
-    }
-  },
-)
+export const getAssignedTasks = createAsyncThunk<
+  ResponseWithPagination,
+  { filterOptions?: TasksFilterOptions; paginationOptions?: PaginationOptions },
+  { rejectValue: string }
+>("task/getAssignedTasks", async ({ filterOptions, paginationOptions }, { rejectWithValue }) => {
+  try {
+    const response = await clientServices.getAssignedTasks(filterOptions, paginationOptions)
+    return response
+  } catch (error: any) {
+    return rejectWithValue(error.message || "Erreur lors de la récupération des tâches")
+  }
+})
 
 export const deleteTask = createAsyncThunk<Task, number, { rejectValue: string }>("task/deleteTask", async (id: number, { rejectWithValue }) => {
   try {
@@ -162,7 +163,7 @@ const taskSlice = createSlice({
         state.loading = true
         state.error = null
       })
-      .addCase(getAssignedTasks.fulfilled, (state, action: PayloadAction<Tasks[]>) => {
+      .addCase(getAssignedTasks.fulfilled, (state, action: PayloadAction<ResponseWithPagination>) => {
         state.loading = false
         state.assignedTasks = action.payload
       })

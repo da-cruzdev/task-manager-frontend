@@ -9,7 +9,6 @@ import {
   IconButton,
   CardFooter,
   Card,
-  Button,
   Tabs,
   Tooltip,
   Avatar,
@@ -17,7 +16,7 @@ import {
 import React, { useEffect, useState } from "react"
 import UpdateTasksModal from "../modals/UpdateTasksModal"
 import { useSelector } from "react-redux"
-import { Tasks, TasksFilterOptions } from "../../interfaces/tasks.interfaces"
+import { PaginationOptions, Tasks, TasksFilterOptions } from "../../interfaces/tasks.interfaces"
 
 import { selectUser } from "../../redux/clientSelectors"
 import { User } from "../../../auth/interfaces/signData.interfaces"
@@ -25,6 +24,7 @@ import { getAssignedTasks, updateTask } from "../../redux/taskSlice"
 import { AppDispatch, useAppDispatch } from "../../../../app/store"
 import { useForm } from "react-hook-form"
 import { StatusChip, formatDate } from "../../../shared/utils/fonctions"
+import Pagination from "../pagination/Pagination"
 
 type TaskCardProps = {
   users: User[]
@@ -40,14 +40,26 @@ const AssignedTasks: React.FC<TaskCardProps> = ({ users }) => {
     query: "",
     status: "",
   })
+  const [paginationOptions, setPaginationOptions] = useState<PaginationOptions>({
+    take: 5,
+    skip: 0,
+  })
+
+  const [active, setActive] = React.useState(1)
+  const [totalCount, setTotalCount] = useState(0)
 
   const currentUser = useSelector(selectUser)
   const dispatch: AppDispatch = useAppDispatch()
+
   useEffect(() => {
     const fetchAssignedTasks = () => {
-      dispatch(getAssignedTasks({ ...filterOptions }))
+      dispatch(getAssignedTasks({ filterOptions, paginationOptions }))
         .unwrap()
-        .then((tasks) => {
+        .then((data) => {
+          const tasks = data.data
+          const total = data.totalCount
+
+          setTotalCount(total)
           setAssignedTasks(tasks)
         })
         .catch((err) => {
@@ -55,7 +67,7 @@ const AssignedTasks: React.FC<TaskCardProps> = ({ users }) => {
         })
     }
     fetchAssignedTasks()
-  }, [currentUser, dispatch, filterOptions])
+  }, [currentUser, dispatch, filterOptions, paginationOptions])
 
   const handleUpdate = (data: any) => {
     dispatch(updateTask(data))
@@ -76,6 +88,16 @@ const AssignedTasks: React.FC<TaskCardProps> = ({ users }) => {
   function handleTabClick(event: any, tabValue: string) {
     const newFilterOptions = { ...filterOptions, status: tabValue }
     setFilterOptions(newFilterOptions)
+  }
+
+  const totalPages = Math.ceil(totalCount / paginationOptions.take!!)
+
+  const handlePageChange = (newPage: number) => {
+    setActive(newPage)
+    setPaginationOptions((prevOptions) => ({
+      ...prevOptions,
+      skip: (newPage - 1) * prevOptions.take!!,
+    }))
   }
 
   return (
@@ -203,17 +225,7 @@ const AssignedTasks: React.FC<TaskCardProps> = ({ users }) => {
           </table>
         </CardBody>
         <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
-          <Typography variant="small" color="blue-gray" className="font-normal">
-            Page 1 of 10
-          </Typography>
-          <div className="flex gap-2">
-            <Button variant="outlined" size="sm">
-              Previous
-            </Button>
-            <Button variant="outlined" size="sm">
-              Next
-            </Button>
-          </div>
+          <Pagination totalPages={totalPages} activePage={active} onPageChange={handlePageChange} />
         </CardFooter>
       </Card>
     </React.Fragment>

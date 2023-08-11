@@ -9,7 +9,7 @@ import {
   TasksFilterOptions,
   UpdateTaskData,
 } from "../interfaces/tasks.interfaces"
-import { UpdateUserData, UpdateUserResponse } from "../interfaces/users.interfaces"
+import { UpdateUserData, UpdateUserResponse, UserResponseData, UsersFilterOptions } from "../interfaces/users.interfaces"
 import {
   CREATE_TASK,
   DELETE_TASK,
@@ -34,9 +34,9 @@ class ClientService {
     }
   }
 
-  async getAllUsers(): Promise<User[]> {
+  async getAllUsers(filterOptions?: UsersFilterOptions, paginationOptions?: PaginationOptions): Promise<UserResponseData> {
     try {
-      const response = await client.query({ query: GET_ALL_USERS })
+      const response = await client.query({ query: GET_ALL_USERS, variables: { filterOptions, paginationOptions } })
 
       return response.data.users
     } catch (error) {
@@ -85,9 +85,9 @@ class ClientService {
     }
   }
 
-  async getAssignedTasks(filterOptions?: TasksFilterOptions): Promise<Tasks[]> {
+  async getAssignedTasks(filterOptions?: TasksFilterOptions, paginationOptions?: PaginationOptions): Promise<ResponseWithPagination> {
     try {
-      const response = await client.query({ query: GET_ASSIGNED_TASKS, variables: { filterOptions } })
+      const response = await client.query({ query: GET_ASSIGNED_TASKS, variables: { filterOptions, paginationOptions } })
       return response.data.assignedTasks
     } catch (error) {
       throw error
