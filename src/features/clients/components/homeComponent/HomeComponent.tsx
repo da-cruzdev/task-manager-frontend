@@ -20,7 +20,7 @@ const HomeComponent = () => {
       <div className="md:col-span-2 md:row-span-2">
         <UserTeamCard users={users!!} />
       </div>
-      <div className="md:col-span-4">
+      <div className="md:col-span-4 mt-0">
         <TasksProgression />
       </div>
     </div>

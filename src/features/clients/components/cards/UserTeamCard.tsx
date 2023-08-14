@@ -10,7 +10,7 @@ export type UserTeamProps = {
 }
 
 export const UserTeamCard: React.FC<UserTeamProps> = ({ users }) => {
-  const firstFourUsers = users ? users.slice(0, 3) : []
+  const firstFourUsers = users ? users.slice(0, 3).sort() : []
   const [userCardOpen, setUserCardOpen] = useState(false)
   const [selectedUser, setselectedUser] = useState<User | null>(null)
 
