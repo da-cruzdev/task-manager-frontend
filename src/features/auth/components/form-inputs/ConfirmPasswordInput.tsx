@@ -1,13 +1,10 @@
-import { Label, TextInput } from "flowbite-react"
+import { Input } from "@material-tailwind/react"
 import React from "react"
 
 export const ConfirmPasswordInput = ({ register, errors }: { register: any; errors: any }) => {
   return (
     <>
-      <div className="mb-2 block">
-        <Label htmlFor="confirmPassword" value="Confirmez votre mot de passe" />
-      </div>
-      <TextInput
+      <Input
         {...register("confirmPassword", {
           required: "Ce champ est requis",
           pattern: { value: /^[A-Za-z0-9]{8,30}$/, message: "Le mot de passe doit avoir au moins 8 caractères" },
