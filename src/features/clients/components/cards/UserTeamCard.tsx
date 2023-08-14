@@ -17,7 +17,7 @@ export const UserTeamCard: React.FC<UserTeamProps> = ({ users }) => {
         <ListItem>
           Membres de l'équipe
           <ListItemSuffix>
-            <Chip value={users?.length} variant="ghost" size="sm" className="rounded-full" />
+            <Chip value={users?.length || 0} variant="ghost" size="sm" className="rounded-full" />
           </ListItemSuffix>
         </ListItem>
         {firstFourUsers.map((user) => (

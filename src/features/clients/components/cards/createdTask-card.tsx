@@ -44,7 +44,7 @@ export const CreatedTaskCard = () => {
           </ListItemSuffix>
         </ListItem>
         {sliceTasks.map((task) => (
-          <ListItem ripple={false} className="py-1 pr-1 pl-4">
+          <ListItem ripple={false} key={task.id} className="py-1 pr-1 pl-4">
             <ListItemPrefix>
               <IconButton variant="text" color="blue-gray">
                 <ClipboardIcon />
