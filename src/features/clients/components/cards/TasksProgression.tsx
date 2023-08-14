@@ -1,7 +1,7 @@
 import React from "react"
-import { Card } from "flowbite-react"
 import { Line } from "react-chartjs-2"
 import { CategoryScale, Chart, registerables } from "chart.js"
+import { Card } from "@material-tailwind/react"
 Chart.register(...registerables, CategoryScale)
 
 const TasksProgression = () => {

@@ -14,6 +14,7 @@ import { UserCircleIcon, ChevronDownIcon, Cog6ToothIcon, PowerIcon } from "@hero
 import { format } from "date-fns"
 import fr from "date-fns/locale/fr"
 import { BellIcon } from "@heroicons/react/24/solid"
+import UserProfileCard from "../cards/userProfile-card"
 
 type UserProps = {
   user: User | null
@@ -23,6 +24,7 @@ type UserProps = {
 export const ProfileMenu: React.FC<UserProps> = ({ user, handleLogout, handleUpdateSubmit }) => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [userCardOpen, setUserCardOpen] = useState(false)
 
   return (
     <>
@@ -46,7 +48,7 @@ export const ProfileMenu: React.FC<UserProps> = ({ user, handleLogout, handleUpd
           </Button>
         </MenuHandler>
         <MenuList className="p-1">
-          <MenuItem key="Mon profil" className="flex items-center gap-2 rounded">
+          <MenuItem key="Mon profil" className="flex items-center gap-2 rounded" onClick={() => setUserCardOpen(true)}>
             <UserCircleIcon className="h-4 w-4" strokeWidth={2} />
             <Typography as="span" variant="small" className="font-normal">
               Mon profil
@@ -70,6 +72,7 @@ export const ProfileMenu: React.FC<UserProps> = ({ user, handleLogout, handleUpd
           </MenuItem>
         </MenuList>
       </Menu>
+      <UserProfileCard open={userCardOpen} onClose={() => setUserCardOpen(false)} selectedUser={user} />
       <UpdateUserInfoModal open={isModalOpen} onClose={() => setIsModalOpen(false)} handleUpdateSubmit={handleUpdateSubmit} />
     </>
   )
