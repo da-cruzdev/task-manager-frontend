@@ -2,7 +2,14 @@
 import { NavLink, useLocation } from "react-router-dom"
 import { useEffect, useState } from "react"
 import { Card, Typography, List, ListItem, ListItemPrefix } from "@material-tailwind/react"
-import { ClipboardIcon, ClipboardDocumentListIcon, UserGroupIcon, InboxIcon, HomeIcon } from "@heroicons/react/24/solid"
+import {
+  ClipboardIcon,
+  ClipboardDocumentListIcon,
+  UserGroupIcon,
+  HomeIcon,
+  BellAlertIcon,
+  ChatBubbleOvalLeftEllipsisIcon,
+} from "@heroicons/react/24/solid"
 
 export default function SidebarComponent() {
   const location = useLocation()
@@ -60,9 +67,15 @@ export default function SidebarComponent() {
         </NavLink>
         <ListItem>
           <ListItemPrefix>
-            <InboxIcon className="h-5 w-5" />
+            <BellAlertIcon className="h-5 w-5" />
           </ListItemPrefix>
           Notifications
+        </ListItem>
+        <ListItem>
+          <ListItemPrefix>
+            <ChatBubbleOvalLeftEllipsisIcon className="h-5 w-5" />
+          </ListItemPrefix>
+          Conversations
         </ListItem>
       </List>
     </Card>

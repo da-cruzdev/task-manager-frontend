@@ -56,7 +56,6 @@ const CreateTaskModal: React.FC<TaskModalProps> = ({ open, onClose, users, onSub
   const { value, onChange, resetDatePicker } = useDatePicker(null)
 
   const handleValueChange = (newValue: any) => {
-    console.log("newValue:", newValue)
     onChange(newValue)
   }
 

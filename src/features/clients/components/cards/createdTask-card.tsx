@@ -35,7 +35,7 @@ export const CreatedTaskCard = () => {
   }, [currentUser, tasks])
 
   return (
-    <Card className={createdTasks.length === 0 ? "w-96 h-full" : "w-96"}>
+    <Card className={createdTasks.length < 4 ? "w-96 h-full" : "w-96"}>
       <List>
         <ListItem className="text-lg mx-auto">
           Tâches créees

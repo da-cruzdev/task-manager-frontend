@@ -7,17 +7,20 @@ import reportWebVitals from "./reportWebVitals"
 import "./index.css"
 import { ApolloProvider } from "@apollo/client"
 import client from "./app/graphql"
+import WebSocketContext, { socket } from "./app/contexts/WebSocketContext"
 
 const container = document.getElementById("root")!
 const root = createRoot(container)
 
 root.render(
   <React.StrictMode>
-    <Provider store={store}>
-      <ApolloProvider client={client}>
-        <App />
-      </ApolloProvider>
-    </Provider>
+    <WebSocketContext.Provider value={socket}>
+      <Provider store={store}>
+        <ApolloProvider client={client}>
+          <App />
+        </ApolloProvider>
+      </Provider>
+    </WebSocketContext.Provider>
   </React.StrictMode>,
 )
 

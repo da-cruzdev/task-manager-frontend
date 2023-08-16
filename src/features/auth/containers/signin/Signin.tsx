@@ -58,7 +58,7 @@ export const Signin = () => {
             <Typography variant="small" className="mt-6 flex justify-center">
               Vous n'avez pas de compte?
               <Link to="/">
-                <Typography as="a" href="#signup" variant="small" color="blue" className="ml-1 font-bold">
+                <Typography variant="small" color="blue" className="ml-1 font-bold">
                   Enregistrez-vous
                 </Typography>
               </Link>

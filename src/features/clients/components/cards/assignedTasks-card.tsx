@@ -32,6 +32,7 @@ export const AssignedTaskCard: React.FC<TaskCardProps> = ({ link }) => {
   const [assignedTasks, setAssignedTasks] = useState<Tasks[]>([])
   const tasks = useSelector(selectTasks)
   const currentUser = useSelector(selectUser)
+  const sliceTasks = assignedTasks.slice(0, 4)
 
   useEffect(() => {
     if (tasks && currentUser) {
@@ -50,7 +51,7 @@ export const AssignedTaskCard: React.FC<TaskCardProps> = ({ link }) => {
             <Chip value={assignedTasks?.length} variant="ghost" size="sm" className="rounded-full" />
           </ListItemSuffix>
         </ListItem>
-        {assignedTasks.map((task) => (
+        {sliceTasks.map((task) => (
           <ListItem ripple={false} key={task.id} className="py-1 pr-1 pl-4">
             <ListItemPrefix>
               <IconButton variant="text" color="blue-gray">
